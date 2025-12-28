@@ -1,138 +1,74 @@
 # Login Automation Test Suite
 
-## Executive Summary
-Automated Python pytest script for login validation with secure credential management, robust error handling, documentation, and automated git integration.
+## Overview
+This project provides a secure, maintainable Python pytest script for login validation. Credentials and login URL are managed via environment variables. Test results can be exported as JUnit XML for CI/CD integration.
 
-**Key Achievements:**
-- Secure, maintainable login automation script
-- Environment variable-based credential management
-- Positive/negative test coverage
-- Robust error handling & logging
-- JUnit XML reporting for CI/CD integration
-- Comprehensive documentation
+## Setup Instructions
+1. **Clone the repository**:
+   ```
+   git clone https://github.com/lakshmi1212/AgenticAI.git
+   cd AgenticAI/Tests
+   ```
+2. **Install dependencies**:
+   - Python 3.8+
+   - Install required packages:
+     ```
+     pip install pytest requests
+     ```
 
-**Success Metrics:**
-- 100% test pass rate for valid credentials
-- Code quality (PEP8 compliant)
-- No hardcoded secrets
-- Successful git integration
+3. **Set environment variables**:
+   - On Linux/macOS:
+     ```
+     export LOGIN_URL=https://your-app.com/login
+     export LOGIN_EMAIL=your-email@example.com
+     export LOGIN_PASSWORD=your-password
+     ```
+   - On Windows (cmd):
+     ```
+     set LOGIN_URL=https://your-app.com/login
+     set LOGIN_EMAIL=your-email@example.com
+     set LOGIN_PASSWORD=your-password
+     ```
 
-**Recommendations:**
-- Integrate with CI/CD pipelines
-- Extend for multi-user, advanced test cases
-
----
-
-## Detailed Analysis
-- **Requirements:** Login automation, credential security, git integration
-- **Technical Approach:** Python/pytest, requests, environment variables, logging, error handling
-- **Implementation:** Parameterized test cases, secure credential handling, automated reporting
-- **Quality Assurance:** Positive/negative cases, edge case validation, security review
-
----
-
-## Deliverables
-- `login_test.py`: Pytest script for login automation
-- `README.md`: Documentation and usage guide
-- Test result reports: JUnit XML (results.xml)
-- Git repository with commit history
-
----
-
-## Implementation Guide
-
-### Setup Instructions
-1. **Install Python & Dependencies:**
-    - Python 3.8+
-    - `pip install pytest requests`
-2. **Set Environment Variables:**
-    - `LOGIN_URL` (e.g., https://your-app.com/login)
-    - `LOGIN_EMAIL` (your login email)
-    - `LOGIN_PASSWORD` (your login password)
-3. **Clone Repo & Run Tests:**
-    ```bash
-    git clone https://github.com/lakshmi1212/AgenticAI.git
-    cd AgenticAI/Tests
-    pytest login_test.py --junitxml=results.xml
-    ```
-
-### Configuration Steps
-- Store secrets outside code (env vars or secret manager)
-- Customize script for additional login fields as needed
-
-### Usage Guidelines
-- Run with valid credentials for positive test
-- Run with invalid credentials for negative test
-- Review `results.xml` for CI/CD integration
-
-### Maintenance Procedures
-- Update dependencies: `pip install -U pytest requests`
-- Update script for new login flows
-- Rotate credentials regularly
-
----
-
-## Quality Assurance Report
-- **Testing Summary:** Valid/invalid credential cases, network error handling
-- **Performance Metrics:** Fast execution (<2s typical)
-- **Security Assessment:** No secrets in code, robust error handling
-- **Compliance Verification:** PEP8, QA best practices
-
----
-
-## Troubleshooting and Support
-- **Common Issues:**
-    - Network errors: Check URL and connectivity
-    - Auth failures: Verify credentials
-    - Git push errors: Check remote permissions
-- **Diagnostic Procedures:**
-    - Review logs in test output
-    - Check error messages in results.xml
-- **Support Resources:**
-    - [Pytest Docs](https://docs.pytest.org/)
-    - [Requests Docs](https://docs.python-requests.org/)
-    - [GitHub Community](https://github.community/)
-- **Escalation:** Contact DevOps/QA lead for persistent issues
-
----
-
-## Future Considerations
-- **Enhancement Opportunities:**
-    - CI/CD pipeline integration (GitHub Actions, Jenkins)
-    - Multi-user and data-driven test cases
-    - Advanced reporting (HTML, Slack notifications)
-- **Scalability:** Modularize test suite for additional endpoints
-- **Technology Evolution:** Support for 2FA, OAuth, new login flows
-- **Maintenance:** Schedule regular reviews and dependency updates
-
----
-
-## Example Environment Variable Setup
-```bash
-export LOGIN_URL='https://your-app.com/login'
-export LOGIN_EMAIL='user@example.com'
-export LOGIN_PASSWORD='yourpassword'
-```
-
----
+## Running Tests
+- Run all login tests and generate JUnit XML report:
+  ```
+  pytest --junitxml=report.xml login_test.py
+  ```
+- To run with HTML report (requires pytest-html):
+  ```
+  pip install pytest-html
+  pytest --html=report.html login_test.py
+  ```
 
 ## Git Integration Workflow
-```bash
-git init
-git add login_test.py README.md
-git commit -m 'Add login automation test suite'
-git push origin main
-```
+- Initialize git repo (if not already):
+  ```
+  git init
+  git add login_test.py README.md
+  git commit -m "Add login automation test suite"
+  git branch -M main
+  git remote add origin https://github.com/lakshmi1212/AgenticAI.git
+  git push -u origin main
+  ```
 
----
+## Troubleshooting
+- **Network errors**: Check your internet connection and LOGIN_URL value.
+- **Authentication failures**: Ensure LOGIN_EMAIL and LOGIN_PASSWORD are correct.
+- **Missing environment variables**: Confirm all required variables are set.
+- **Git push errors**: Check your access permissions and branch name.
 
-## CI/CD Integration Example
-Add to your pipeline:
-```bash
-pytest Tests/login_test.py --junitxml=results.xml
-```
+## Maintenance
+- Update dependencies regularly.
+- Rotate credentials as per your security policy.
+- Extend tests by adding more cases to `login_test.py`.
 
----
+## Recommendations & Future Improvements
+- Integrate with CI/CD (e.g., GitHub Actions, Jenkins).
+- Add support for 2FA, CSRF tokens, or token-based authentication if required.
+- Modularize for additional test cases and multi-user scenarios.
+- Implement advanced reporting and notifications.
 
-## Contact
-For support, open a GitHub issue or contact the QA/DevOps team.
+## Support
+- For issues, refer to this README or open an issue in the repository.
+- Community resources: [pytest docs](https://docs.pytest.org/), [requests docs](https://docs.python-requests.org/)
