@@ -1,52 +1,47 @@
-#!/usr/bin/env python3
+# login_test.py
 """
-Login Automation Test using Pytest
-----------------------------------
-- Secure credential management via environment variables
-- Robust error handling and logging
-- Test result reporting (JUnit XML)
+Automated pytest script for login validation.
+Credentials and URL are sourced from environment variables for security.
+Generates JUnit XML test reports for CI/CD integration.
 """
 import os
+import logging
 import pytest
 import requests
-import logging
 
+# Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
+logger = logging.getLogger(__name__)
 
-@pytest.mark.parametrize("test_case", [
-    {"desc": "Valid credentials", "expect_success": True},
-    {"desc": "Invalid credentials", "expect_success": False}
+@pytest.mark.login
+@pytest.mark.parametrize("case, email, password, expected_status", [
+    ("valid", os.getenv("LOGIN_EMAIL"), os.getenv("LOGIN_PASSWORD"), 200),
+    ("invalid_password", os.getenv("LOGIN_EMAIL"), "invalid_pass", 401),
+    ("invalid_email", "invalid@email.com", os.getenv("LOGIN_PASSWORD"), 401)
 ])
-def test_login(test_case):
+def test_login(case, email, password, expected_status):
     """
-    Test login endpoint with positive and negative cases.
-    Env vars required: LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD
+    Login test with positive and negative cases.
+    Environment variables required: LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD
     """
     url = os.getenv('LOGIN_URL')
-    email = os.getenv('LOGIN_EMAIL')
-    password = os.getenv('LOGIN_PASSWORD')
-
-    assert url and email and password, "Missing LOGIN_URL, LOGIN_EMAIL, or LOGIN_PASSWORD env vars."
+    assert url, 'LOGIN_URL not set as environment variable.'
+    assert email, 'Email not provided.'
+    assert password, 'Password not provided.'
     session = requests.Session()
-    payload = {"email": email, "password": password}
-    if not test_case["expect_success"]:
-        payload["password"] = "wrong_password"  # Simulate negative test
-
+    payload = {'email': email, 'password': password}
     try:
         response = session.post(url, data=payload, timeout=10)
-        logging.info(f"POST {url} status={response.status_code}")
-    except requests.RequestException as e:
-        logging.error(f"Network error: {e}")
+        logger.info(f"Test case: {case}, Status: {response.status_code}, Response: {response.text[:100]}")
+    except requests.exceptions.RequestException as e:
+        logger.error(f"Network error during login: {e}")
         pytest.fail(f"Network error: {e}")
+    assert response.status_code == expected_status, f"Expected {expected_status}, got {response.status_code}: {response.text}"
+    if case == "valid":
+        assert ('dashboard' in response.url or 'success' in response.text.lower()), "Login not successful."
 
-    if test_case["expect_success"]:
-        assert response.status_code == 200, f"Login failed: {response.text}"
-        assert "dashboard" in response.url or "success" in response.text.lower(), "Login not successful."
-        logging.info("Login successful with valid credentials.")
-    else:
-        assert response.status_code != 200 or "error" in response.text.lower(), "Login should fail with invalid credentials."
-        logging.info("Login failed as expected with invalid credentials.")
-
-# Usage:
-# 1. Set environment variables LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD
-# 2. Run: pytest login_test.py --junitxml=results.xml
+# To run:
+#   export LOGIN_URL=https://example.com/login
+#   export LOGIN_EMAIL=user@example.com
+#   export LOGIN_PASSWORD=securepassword
+#   pytest --junitxml=report.xml Tests/login_test.py
