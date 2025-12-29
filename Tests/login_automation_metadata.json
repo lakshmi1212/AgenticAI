@@ -1,0 +1,27 @@
+{
+  "artifact_type": "pytest_test",
+  "repository": "lakshmi1212/AgenticAI",
+  "default_branch": "main",
+  "python_version": ">=3.8",
+  "test_files": ["login_test.py"],
+  "dependencies": ["pytest", "requests", "python-dotenv"],
+  "required_secrets": ["LOGIN_URL", "LOGIN_EMAIL", "LOGIN_PASSWORD"],
+  "test_command": "pytest login_test.py --junitxml=results.xml",
+  "ci_platform": "github_actions",
+  "trigger_options": ["on push", "manual"],
+  "git_operation_status": {
+    "commit_confirmation": true,
+    "repo": "lakshmi1212/AgenticAI",
+    "branch": "main",
+    "files": [
+      "Tests/login_test.py",
+      "Tests/.env.template",
+      "Tests/README.md"
+    ]
+  },
+  "all_repository_files": [
+    "Tests/login_test.py",
+    "Tests/.env.template",
+    "Tests/README.md"
+  ]
+}
