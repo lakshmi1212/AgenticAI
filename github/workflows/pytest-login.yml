@@ -2,30 +2,29 @@ name: Pytest Login CI
 
 on:
   push:
-    branches: [ main ]
+    paths:
+      - 'Tests/login_test_metadata.json'
+      - '**.py'
   pull_request:
-    branches: [ main ]
+    paths:
+      - 'Tests/login_test_metadata.json'
+      - '**.py'
+  workflow_dispatch:
 
 jobs:
   test:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9'
+          python-version: '3.10'
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
       - name: Run Pytest login tests
         run: |
-          pytest Tests/login_test_metadata.json --maxfail=1 --disable-warnings -q
-      - name: Archive Pytest results
-        if: always()
-        uses: actions/upload-artifact@v3
-        with:
-          name: pytest-results
-          path: ./pytest_results.xml
+          pytest Tests/ --disable-warnings --maxfail=1
