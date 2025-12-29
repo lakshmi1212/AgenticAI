@@ -1,74 +1,75 @@
 # Login Automation Test Suite
 
 ## Overview
-This project provides a secure, maintainable Python pytest script for login validation. Credentials and login URL are managed via environment variables. Test results can be exported as JUnit XML for CI/CD integration.
+This suite provides a robust, secure, and maintainable login automation test using Python, pytest, and requests. It is designed for DevOps pipelines with full git integration, test reporting, and best practices in credential management.
+
+## Features
+- Parameterized login tests (positive/negative)
+- Secure credential handling (via environment variables or .env)
+- Robust error handling and logging
+- JUnit XML test report for CI/CD integration
+- Comprehensive documentation and troubleshooting guide
 
 ## Setup Instructions
-1. **Clone the repository**:
-   ```
-   git clone https://github.com/lakshmi1212/AgenticAI.git
-   cd AgenticAI/Tests
-   ```
-2. **Install dependencies**:
-   - Python 3.8+
-   - Install required packages:
-     ```
-     pip install pytest requests
-     ```
-
-3. **Set environment variables**:
-   - On Linux/macOS:
-     ```
-     export LOGIN_URL=https://your-app.com/login
-     export LOGIN_EMAIL=your-email@example.com
-     export LOGIN_PASSWORD=your-password
-     ```
-   - On Windows (cmd):
-     ```
-     set LOGIN_URL=https://your-app.com/login
-     set LOGIN_EMAIL=your-email@example.com
-     set LOGIN_PASSWORD=your-password
-     ```
+1. **Clone the repo**
+    ```bash
+    git clone https://github.com/lakshmi1212/AgenticAI.git
+    cd AgenticAI/Tests
+    ```
+2. **Install dependencies**
+    ```bash
+    python3 -m venv venv
+    source venv/bin/activate
+    pip install pytest requests python-dotenv
+    ```
+3. **Configure credentials**
+    - Copy `.env.template` to `.env` and fill in your login details:
+      ```bash
+      cp .env.template .env
+      # Edit .env with your LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD
+      ```
+    - Alternatively, set environment variables:
+      ```bash
+      export LOGIN_URL=https://your-app.com/api/login
+      export LOGIN_EMAIL=your-email@example.com
+      export LOGIN_PASSWORD=your-secure-password
+      ```
 
 ## Running Tests
-- Run all login tests and generate JUnit XML report:
-  ```
-  pytest --junitxml=report.xml login_test.py
-  ```
-- To run with HTML report (requires pytest-html):
-  ```
-  pip install pytest-html
-  pytest --html=report.html login_test.py
-  ```
+```bash
+pytest --junitxml=results.xml login_test.py
+```
+- Results are available in `results.xml` for integration with CI/CD systems.
 
 ## Git Integration Workflow
-- Initialize git repo (if not already):
-  ```
-  git init
-  git add login_test.py README.md
-  git commit -m "Add login automation test suite"
-  git branch -M main
-  git remote add origin https://github.com/lakshmi1212/AgenticAI.git
-  git push -u origin main
-  ```
+```bash
+git add login_test.py .env.template README.md
+git commit -m "Add login automation test suite"
+git push origin main
+```
 
-## Troubleshooting
-- **Network errors**: Check your internet connection and LOGIN_URL value.
-- **Authentication failures**: Ensure LOGIN_EMAIL and LOGIN_PASSWORD are correct.
-- **Missing environment variables**: Confirm all required variables are set.
-- **Git push errors**: Check your access permissions and branch name.
+## Troubleshooting Guide
+- **Network errors:** Check connectivity and LOGIN_URL correctness; review logs for details.
+- **Authentication failures:** Verify credentials in your .env or environment variables; ensure your account is active.
+- **Unexpected test errors:** Review logs and test output; validate the login endpoint and parameters.
+- **Git errors:** Confirm remote URL and branch; ensure you have push access.
 
-## Maintenance
-- Update dependencies regularly.
-- Rotate credentials as per your security policy.
-- Extend tests by adding more cases to `login_test.py`.
+## Maintenance Procedures
+- Update dependencies: `pip install -U -r requirements.txt` (if requirements.txt is used)
+- Change credentials: Edit `.env` or update environment variables.
+- Extend tests: Add more scenarios to `test_login` or create new test functions.
 
-## Recommendations & Future Improvements
-- Integrate with CI/CD (e.g., GitHub Actions, Jenkins).
-- Add support for 2FA, CSRF tokens, or token-based authentication if required.
-- Modularize for additional test cases and multi-user scenarios.
-- Implement advanced reporting and notifications.
+## Recommendations and Future Improvements
+- Integrate with CI/CD (e.g., GitHub Actions)
+- Add support for 2FA, CSRF, or SSO if required
+- Expand for additional test cases and advanced reporting (HTML)
+- Modularize for multi-user and multi-environment support
 
-## Support
-- For issues, refer to this README or open an issue in the repository.
-- Community resources: [pytest docs](https://docs.pytest.org/), [requests docs](https://docs.python-requests.org/)
+## Support & Resources
+- [pytest documentation](https://docs.pytest.org/)
+- [requests documentation](https://docs.python-requests.org/)
+- [python-dotenv](https://pypi.org/project/python-dotenv/)
+
+---
+
+**Security Notice:** Never commit `.env` files or hardcoded secrets to version control. Always use environment variables or secure vaults in production/CI.
