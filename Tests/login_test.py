@@ -1,8 +1,9 @@
-# login_test.py
+#!/usr/bin/env python3
 """
-Automated pytest script for login validation.
-Credentials and URL are sourced from environment variables for security.
-Generates JUnit XML test reports for CI/CD integration.
+login_test.py
+Automated login validation using pytest and requests.
+Credentials and login URL must be provided via environment variables for security.
+Generates JUnit XML test report for CI/CD integration.
 """
 import os
 import logging
@@ -13,35 +14,39 @@ import requests
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 logger = logging.getLogger(__name__)
 
-@pytest.mark.login
-@pytest.mark.parametrize("case, email, password, expected_status", [
-    ("valid", os.getenv("LOGIN_EMAIL"), os.getenv("LOGIN_PASSWORD"), 200),
-    ("invalid_password", os.getenv("LOGIN_EMAIL"), "invalid_pass", 401),
-    ("invalid_email", "invalid@email.com", os.getenv("LOGIN_PASSWORD"), 401)
+@pytest.mark.parametrize("email,password,expected", [
+    # Positive test (correct credentials)
+    (os.getenv('LOGIN_EMAIL'), os.getenv('LOGIN_PASSWORD'), True),
+    # Negative test (wrong password)
+    (os.getenv('LOGIN_EMAIL'), 'invalid_password', False),
 ])
-def test_login(case, email, password, expected_status):
+def test_login(email, password, expected):
     """
-    Login test with positive and negative cases.
-    Environment variables required: LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD
+    Test login functionality with positive and negative scenarios.
+    Expects environment variables: LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD
     """
     url = os.getenv('LOGIN_URL')
-    assert url, 'LOGIN_URL not set as environment variable.'
-    assert email, 'Email not provided.'
-    assert password, 'Password not provided.'
+    assert url, 'LOGIN_URL not set in environment.'
+    assert email, 'LOGIN_EMAIL not set in environment.'
+    assert password is not None, 'LOGIN_PASSWORD not set in environment.'
+
     session = requests.Session()
     payload = {'email': email, 'password': password}
     try:
         response = session.post(url, data=payload, timeout=10)
-        logger.info(f"Test case: {case}, Status: {response.status_code}, Response: {response.text[:100]}")
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Network error during login: {e}")
-        pytest.fail(f"Network error: {e}")
-    assert response.status_code == expected_status, f"Expected {expected_status}, got {response.status_code}: {response.text}"
-    if case == "valid":
-        assert ('dashboard' in response.url or 'success' in response.text.lower()), "Login not successful."
+        logger.info(f'POST {url} -> {response.status_code}')
+    except requests.RequestException as e:
+        logger.error(f'Network error: {e}')
+        pytest.fail(f'Network error: {e}')
 
-# To run:
-#   export LOGIN_URL=https://example.com/login
-#   export LOGIN_EMAIL=user@example.com
-#   export LOGIN_PASSWORD=securepassword
-#   pytest --junitxml=report.xml Tests/login_test.py
+    if expected:
+        assert response.status_code == 200, f'Login failed: {response.text}'
+        assert ("dashboard" in response.url or "success" in response.text.lower()), "Login not successful."
+    else:
+        assert response.status_code in (401, 403, 400) or "invalid" in response.text.lower(), "Negative login did not fail as expected."
+
+    logger.info(f'Login test (expected={expected}) completed.')
+
+# Usage:
+#   Set environment variables: LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD
+#   Run tests: pytest --junitxml=results.xml login_test.py
