@@ -1,8 +1,9 @@
 # login_test.py
 """
-Automated login test using pytest and requests.
-Credentials and login URL are securely loaded from environment variables.
-Includes robust error handling and logging for DevOps integration.
+Automated login validation using pytest and requests.
+- Credentials and URL are read from environment variables for security.
+- Robust error handling and logging included.
+- JUnit XML/HTML reporting compatible with pytest plugins.
 """
 import os
 import pytest
@@ -17,28 +18,39 @@ LOGIN_EMAIL = os.getenv('LOGIN_EMAIL')
 LOGIN_PASSWORD = os.getenv('LOGIN_PASSWORD')
 
 def is_env_configured():
-    return all([LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD])
+    missing = [var for var in ['LOGIN_URL', 'LOGIN_EMAIL', 'LOGIN_PASSWORD'] if not os.getenv(var)]
+    if missing:
+        logging.error(f"Missing required environment variables: {', '.join(missing)}")
+    return not missing
 
-@pytest.mark.parametrize("email,password,expected", [
-    (LOGIN_EMAIL, LOGIN_PASSWORD, True), # Positive test
-    (LOGIN_EMAIL, "wrong_password", False), # Negative test
-    ("wrong_email@example.com", LOGIN_PASSWORD, False), # Negative test
+@pytest.mark.parametrize('email,password,expected', [
+    (LOGIN_EMAIL, LOGIN_PASSWORD, True),  # Positive case
+    (LOGIN_EMAIL, 'wrongpassword', False),  # Negative case
+    ('wrongemail@example.com', LOGIN_PASSWORD, False),  # Negative case
 ])
 def test_login(email, password, expected):
     if not is_env_configured():
-        pytest.skip("Environment variables LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD must be set.")
+        pytest.skip("Environment not configured correctly.")
+    assert LOGIN_URL, "LOGIN_URL environment variable not set."
+
     session = requests.Session()
     payload = {'email': email, 'password': password}
     try:
-        logging.info(f"Attempting login for email: {email}")
         response = session.post(LOGIN_URL, data=payload, timeout=10)
-    except requests.RequestException as e:
+        logging.info(f"POST {LOGIN_URL} -> {response.status_code}")
+    except requests.exceptions.RequestException as e:
         logging.error(f"Network error during login: {e}")
-        assert not expected, f"Expected failure due to network error, got exception: {e}"
+        pytest.fail(f"Network error: {e}")
         return
-    logging.info(f"Login response status: {response.status_code}")
+
     if expected:
-        assert response.status_code == 200, f"Login failed: {response.text}"
-        assert ("dashboard" in response.url or "success" in response.text.lower()), "Login not successful."
+        assert response.status_code == 200, f"Expected success, got {response.status_code}"
+        assert ('dashboard' in response.url or 'success' in response.text.lower()), "Login not successful."
     else:
-        assert response.status_code != 200 or "error" in response.text.lower(), "Negative login should fail."
+        assert response.status_code != 200 or ('error' in response.text.lower() or 'invalid' in response.text.lower()), "Expected failure but login succeeded."
+
+# Usage:
+#   Set LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD environment variables.
+#   Run: pytest --maxfail=2 --disable-warnings --junitxml=results.xml Laks/login_test.py
+#
+# For HTML report: pytest --html=report.html Laks/login_test.py
