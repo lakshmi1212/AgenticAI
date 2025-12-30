@@ -4,20 +4,20 @@
   "default_branch": "main",
   "python_version": ">=3.8",
   "test_files": ["login_test.py"],
-  "dependencies": ["pytest", "requests", "python-dotenv"],
+  "dependencies": ["pytest", "requests", "pytest-html"],
   "required_secrets": ["LOGIN_URL", "LOGIN_EMAIL", "LOGIN_PASSWORD"],
-  "test_command": "pytest login_test.py --tb=short --junitxml=results.xml",
+  "test_command": "pytest --maxfail=2 --disable-warnings --junitxml=results.xml Laks/login_test.py",
   "ci_platform": "github_actions",
-  "trigger_options": ["on push", "manual"],
+  "trigger_options": ["on_push", "manual"],
   "git_operation_status": {
     "commit_confirmation": true,
     "repo": "lakshmi1212/AgenticAI",
     "branch": "main"
   },
-  "repository_files": [
-    "login_test.py",
-    "README.md",
-    ".env.template",
-    "login_automation_metadata.json"
+  "repo_files": [
+    "Laks/login_test.py",
+    "Laks/.env.template",
+    "Laks/README.md",
+    "Laks/login_automation_metadata.json"
   ]
 }
