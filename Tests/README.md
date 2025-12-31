@@ -1,116 +1,77 @@
 # Login Automation Test Suite
 
-This suite provides robust, secure, and maintainable login automation for modern QA and DevOps pipelines using Python, pytest, and requests.
+This suite provides robust, secure, and maintainable automated login validation using Python, pytest, and requests. It is designed for DevOps/CI integration and secure credential management.
 
-## 🚀 Features
-- Secure credential management (via environment variables)
-- Positive and negative login validation
-- Logging and robust error handling
-- JUnit XML reporting for CI/CD
-- Full git integration and maintainable codebase
+## Setup
 
----
+1. **Clone the repository:**
+   ```sh
+   git clone https://github.com/lakshmi1212/AgenticAI.git
+   cd AgenticAI
+   ```
+2. **Python Setup:**
+   - Requires **Python 3.11**.
+   - Install dependencies:
+     ```sh
+     pip install -r requirements.txt
+     ```
+3. **Environment Variables:**
+   - Copy `.env.template` to `.env` and fill in your actual credentials.
+   - Export environment variables (or use a tool like `python-dotenv`):
+     ```sh
+     export $(cat Tests/.env | xargs)
+     ```
+   - Required variables:
+     - `LOGIN_URL` (e.g., https://your-app.example.com/api/login)
+     - `LOGIN_EMAIL` (your valid email)
+     - `LOGIN_PASSWORD` (your valid password)
 
-## 1. Setup Instructions
-
-### Prerequisites
-- Python 3.8+
-- pip (Python package installer)
-- pytest
-- requests
-
-### Install Dependencies
-```sh
-pip install pytest requests
-```
-
-### Environment Variables
-Copy `.env.template` to `.env`, fill in your credentials, and export them:
-
-```sh
-cp .env.template .env
-# Edit .env and set LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD
-export $(grep -v '^#' .env | xargs)
-```
-
----
-
-## 2. Running Tests
-
-To execute the test suite and generate a JUnit XML report:
+## Running Tests
 
 ```sh
-pytest Tests/login_test.py --junitxml=report.xml
+pytest Tests/login_test.py --junitxml=results.xml
 ```
 
-### Test Cases
-- **Positive:** Valid email/password should login successfully.
-- **Negative:** Invalid credentials should result in HTTP 401 and error message.
+- Results are shown in terminal and saved as JUnit XML for CI integration.
+
+## Git Integration
+
+- The test suite is versioned in git and ready for CI/CD pipelines (see `.github/workflows/ci.yml`).
+- To commit changes:
+  ```sh
+  git add Tests/login_test.py Tests/.env.template Tests/README.md requirements.txt .github/workflows/ci.yml login_test.metadata.json
+  git commit -m "Add robust login automation test suite"
+  git push origin main
+  ```
+
+## Troubleshooting
+
+- **Missing credentials:** Ensure all required environment variables are set.
+- **Network errors:** Check connectivity and login URL.
+- **Authentication failures:** Validate credentials, check for 2FA/CSRF requirements.
+- **Git errors:** Check remote URL, branch, and permissions.
+
+## Security
+
+- Never commit real secrets or credentials.
+- Use `.env` for local secrets only.
+- All sensitive data is parameterized; no hardcoded credentials.
+
+## Extending & Maintenance
+
+- Add more test cases to `test_login` for additional scenarios.
+- Update dependencies as needed in `requirements.txt`.
+- For new features, create a new branch and pull request.
+
+## CI/CD Recommendations
+
+- Integrate with GitHub Actions (see `.github/workflows/ci.yml`) for automated testing on push/PR.
+- Monitor test pass rates and code quality.
+
+## Support
+
+- For help, review logs and error messages, or consult your DevOps/QA team.
 
 ---
 
-## 3. Git Integration Workflow
-
-The repo follows best practices for code and test asset management:
-
-```sh
-git init
-git add Tests/login_test.py Tests/README.md Tests/.env.template
-git commit -m "Add login automation test suite"
-git push origin main
-```
-
----
-
-## 4. Troubleshooting Guide
-
-| Issue | Solution |
-|-------|----------|
-| `Missing credentials or URL.` | Ensure LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD are exported in your shell |
-| Network errors | Check connectivity, proxy, and VPN settings |
-| Authentication failures | Verify credentials are correct |
-| Git push errors | Ensure you have the correct repo access and branch |
-
-- Review `report.xml` and pytest logs for detailed error information.
-- Use `logging.INFO` output for diagnosis.
-
----
-
-## 5. Maintenance & Extensibility
-- Update test cases in `login_test.py` as needed
-- Add more tests for edge cases, 2FA, CSRF, etc.
-- Update dependencies regularly
-- Rotate credentials securely
-
----
-
-## 6. CI/CD Integration
-- Integrate with GitHub Actions or your preferred CI tool
-- Use JUnit XML report for test result publication
-
----
-
-## 7. Security Best Practices
-- Never commit real credentials
-- Use environment variables or secure vaults for secrets
-- Review code for PEP8 and QA standards compliance
-
----
-
-## 8. Support & Escalation
-- For issues, review logs and this README
-- For advanced support, escalate to QA/DevOps lead
-- Community resources: [pytest docs](https://docs.pytest.org/), [requests docs](https://docs.python-requests.org/)
-
----
-
-## 9. Future Recommendations
-- Add CI/CD pipeline for automated test execution
-- Expand test coverage (multi-user, advanced auth)
-- Add HTML reporting, Slack/email notifications
-- Modularize tests for scalability
-- Schedule regular reviews and dependency updates
-
----
-
-**Author:** Senior QA Automation Engineer & DevOps Integrator
+**Author:** Senior QA Automation & DevOps Integrator
