@@ -1,0 +1,4 @@
+# requirements.txt
+# Python 3.11 is required (see login_test.metadata.json)
+pytest==7.4.4
+requests==2.31.0
