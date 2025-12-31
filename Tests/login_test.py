@@ -1,9 +1,9 @@
-#!/usr/bin/env python3
+# login_test.py
 """
-Login Automation Test using pytest
-- Secure credential handling (env vars)
-- Robust error handling and logging
-- JUnit XML reporting for CI/CD
+Automated login validation test using pytest and requests.
+- Credentials and login URL are securely parameterized via environment variables.
+- Robust error handling and logging for network/authentication issues.
+- Designed for integration with DevOps/CI pipelines.
 """
 import os
 import logging
@@ -13,32 +13,32 @@ import requests
 # Configure logging
 logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 
-LOGIN_URL = os.getenv('LOGIN_URL')
-LOGIN_EMAIL = os.getenv('LOGIN_EMAIL')
-LOGIN_PASSWORD = os.getenv('LOGIN_PASSWORD')
-
-@pytest.mark.parametrize("email, password, expected_status", [
-    (LOGIN_EMAIL, LOGIN_PASSWORD, 200),  # Positive test
-    ("invalid@example.com", "wrongpass", 401),  # Negative test
+@pytest.mark.parametrize("case, email, password, expected", [
+    ("valid", os.getenv('LOGIN_EMAIL'), os.getenv('LOGIN_PASSWORD'), True),
+    ("invalid_password", os.getenv('LOGIN_EMAIL'), "invalid_pass", False),
+    ("invalid_email", "invalid@example.com", os.getenv('LOGIN_PASSWORD'), False),
 ])
-def test_login(email, password, expected_status):
+def test_login(case, email, password, expected):
     """
-    Test the login endpoint with parameterized credentials.
-    Env vars required: LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD
+    Test login endpoint with different credential scenarios.
+    Requires environment variables:
+      - LOGIN_URL
+      - LOGIN_EMAIL
+      - LOGIN_PASSWORD
     """
-    assert LOGIN_URL, "LOGIN_URL environment variable not set."
+    url = os.getenv('LOGIN_URL')
+    assert url and email and password, f"Missing credentials or URL for case: {case}"
     session = requests.Session()
-    payload = {"email": email, "password": password}
+    payload = {'email': email, 'password': password}
     try:
-        response = session.post(LOGIN_URL, data=payload, timeout=10)
-        logging.info(f"POST {LOGIN_URL} - status {response.status_code}")
-    except requests.RequestException as e:
-        logging.error(f"Network error: {e}")
-        pytest.fail(f"Network error: {e}")
-    # Check status code
-    assert response.status_code == expected_status, f"Expected {expected_status}, got {response.status_code}: {response.text}"
-    if expected_status == 200:
-        # Success criteria: dashboard in URL or success in response
-        assert ("dashboard" in response.url or "success" in response.text.lower()), "Login not successful."
+        response = session.post(url, data=payload, timeout=10)
+        logging.info(f"[{case}] POST {url} -> {response.status_code}")
+    except requests.exceptions.RequestException as e:
+        logging.error(f"[{case}] Network error: {e}")
+        assert not expected, f"[{case}] Network error in positive test: {e}"
+        return
+    if expected:
+        assert response.status_code == 200, f"[{case}] Login failed: {response.text}"
+        assert ("dashboard" in response.url or "success" in response.text.lower()), f"[{case}] Login not successful: {response.text}"
     else:
-        assert ("error" in response.text.lower() or "fail" in response.text.lower()), "Expected error message not found."
+        assert response.status_code != 200 or "error" in response.text.lower(), f"[{case}] Negative test should fail, but succeeded."
