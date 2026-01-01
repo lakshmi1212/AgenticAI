@@ -1,4 +1,3 @@
-# requirements.txt
-# Python dependencies for login automation testing
+# Requirements for login automation test suite
 pytest==7.4.4
 requests==2.31.0
