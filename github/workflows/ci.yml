@@ -1,0 +1,53 @@
+```yaml
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  actions: write
+
+jobs:
+  build-and-test:
+    timeout-minutes: 10
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+          cache: 'pip'
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        env:
+          SECRET_KEY: ${{ secrets.SECRET_KEY }}
+          API_TOKEN: ${{ secrets.API_TOKEN }}
+        run: pytest Tests/login_test.py --tb=short --junitxml=login_test_results.xml -v
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: test-results
+          path: login_test_results.xml
+          retention-days: 30
+
+      - name: Notify on failure
+        if: failure()
+        run: echo "Tests failed! Please check the logs."
+```
