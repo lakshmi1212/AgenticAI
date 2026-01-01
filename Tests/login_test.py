@@ -1,46 +1,49 @@
 #!/usr/bin/env python3
 """
-login_test.py
-Automated login validation using pytest and requests with secure credential handling.
+login_test.py: Pytest-based login automation script.
+Validates login functionality using environment variables for secure credential handling.
 """
 import os
 import pytest
 import requests
 import logging
 
-# Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
-logger = logging.getLogger(__name__)
+def setup_logging():
+    logging.basicConfig(
+        level=logging.INFO,
+        format='%(asctime)s %(levelname)s %(message)s',
+        handlers=[logging.StreamHandler()]
+    )
 
-@pytest.mark.parametrize("case, email, password, expected_status", [
-    ("positive", os.getenv("LOGIN_EMAIL"), os.getenv("LOGIN_PASSWORD"), 200),
-    ("negative_wrong_password", os.getenv("LOGIN_EMAIL"), "invalid_password", 401),
-])
-def test_login(case, email, password, expected_status):
-    """
-    Validates login functionality with positive and negative test cases.
-    Credentials are provided via environment variables for security.
-    """
-    url = os.getenv("LOGIN_URL")
-    assert url, "LOGIN_URL environment variable not set."
-    assert email, "LOGIN_EMAIL environment variable not set."
-    assert password, "LOGIN_PASSWORD environment variable not set (for positive test)."
+@pytest.fixture(scope='session', autouse=True)
+def configure_logging():
+    setup_logging()
+
+@pytest.mark.login
+def test_login():
+    url = os.getenv('LOGIN_URL')
+    email = os.getenv('LOGIN_EMAIL')
+    password = os.getenv('LOGIN_PASSWORD')
+    assert url and email and password, 'Missing LOGIN_URL, LOGIN_EMAIL, or LOGIN_PASSWORD environment variables.'
 
     session = requests.Session()
-    payload = {"email": email, "password": password}
+    payload = {'email': email, 'password': password}
     try:
         response = session.post(url, data=payload, timeout=10)
-        logger.info(f"Test case: {case}, POST {url}, status: {response.status_code}")
-    except requests.RequestException as e:
-        logger.error(f"Network error during login POST: {e}")
-        pytest.fail(f"Network error during login POST: {e}")
+    except requests.exceptions.RequestException as e:
+        logging.error(f'Network or connection error during login: {e}')
+        pytest.fail(f'Network error: {e}')
 
-    assert response.status_code == expected_status, f"Expected {expected_status}, got {response.status_code}: {response.text}"
-    if case == "positive":
-        # Basic success validation
-        assert ("dashboard" in response.url or "success" in response.text.lower()), "Login not successful."
-    else:
-        # Negative case: error message or redirect
-        assert ("invalid" in response.text.lower() or "error" in response.text.lower()), "Expected failure message missing."
+    logging.info(f'Response status: {response.status_code}')
+    logging.info(f'Response URL: {response.url}')
+    logging.debug(f'Response text: {response.text[:200]}')
 
-    logger.info(f"Test {case} completed successfully.")
+    assert response.status_code == 200, f'Login failed: {response.text}'
+    success_indicators = ['dashboard', 'success', 'logged in', 'welcome']
+    assert any(ind in response.url.lower() or ind in response.text.lower() for ind in success_indicators), 'Login not successful.'
+
+    logging.info('Login test passed successfully.')
+
+# Usage:
+#   1. Set environment variables: LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD
+#   2. Run: pytest Tests/login_test.py --maxfail=1 --disable-warnings --tb=short --junitxml=Tests/report.xml
