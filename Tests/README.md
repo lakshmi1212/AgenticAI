@@ -1,48 +1,65 @@
 # Login Automation Test Suite
 
 ## Overview
-Automated login validation using Python, pytest, and requests. Credentials are securely managed via environment variables. Results are suitable for DevOps pipelines and CI/CD integration.
+Automated login validation using Python, pytest, and requests. Credentials are securely managed via environment variables for robust, secure, and maintainable testing.
 
 ## Setup Instructions
-1. **Python & Dependencies:**
-   - Install Python 3.11
-   - Install dependencies: `pip install -r ../requirements.txt`
-2. **Environment Variables:**
-   - Copy `Tests/.env.template` to `.env` and set your credentials.
-   - Export environment variables or use a tool like `python-dotenv`.
-3. **Test Execution:**
-   - Run tests: `pytest Tests/login_test.py --maxfail=1 --disable-warnings --tb=short --junitxml=Tests/report.xml`
+1. **Python Installation**:
+   - Install Python 3.11.
+2. **Install Dependencies**:
+   - Run: `pip install -r ../requirements.txt` (from the Tests directory)
+3. **Configure Environment Variables**:
+   - Copy `.env.template` to `.env` and set values, or export variables:
+     - LOGIN_URL
+     - LOGIN_EMAIL
+     - LOGIN_PASSWORD
+   - Example:
+     ```bash
+     export LOGIN_URL=https://your-login-url.example.com/login
+     export LOGIN_EMAIL=your.email@example.com
+     export LOGIN_PASSWORD=your_secure_password
+     ```
 
-## Secure Credential Management
-- Never commit `.env` files containing real secrets.
-- Use CI/CD secret stores (GitHub Actions secrets) for pipeline execution.
+## Running the Test
+- From the root directory, run:
+  ```bash
+  pytest Tests/login_test.py --maxfail=1 --disable-warnings --junitxml=login_test_results.xml
+  ```
+- Test results are output in JUnit XML format (`login_test_results.xml`).
 
 ## Git Integration Workflow
-- Initialize repo: `git init`
-- Add files: `git add Tests/login_test.py Tests/.env.template Tests/README.md requirements.txt login_test.metadata.json`
-- Commit: `git commit -m "Add login automation test suite"`
-- Push: `git push origin main`
+1. Initialize repo (if not already):
+   ```bash
+   git init
+   git remote add origin https://github.com/lakshmi1212/AgenticAI.git
+   ```
+2. Add files:
+   ```bash
+   git add Tests/login_test.py Tests/README.md Tests/.env.template requirements.txt login_test.metadata.json
+   ```
+3. Commit and push:
+   ```bash
+   git commit -m "Add login automation test suite"
+   git push origin main
+   ```
 
-## Troubleshooting Guide
-- **Network errors:** Check endpoint, credentials, and connectivity.
-- **Authentication failures:** Verify credentials and endpoint format.
-- **Git errors:** Ensure correct remote URL and branch.
+## Troubleshooting
+- **Network errors**: Check your internet and login URL.
+- **Authentication failures**: Verify credentials and environment variable setup.
+- **Git errors**: Ensure correct remote, branch, and permissions.
+- **Log analysis**: Review logs/output for detailed error messages.
 
-## Maintenance Procedures
-- Update dependencies in `requirements.txt` as needed.
-- Review credentials and rotate secrets regularly.
-- Extend `login_test.py` for additional test cases.
+## Maintenance & Extensibility
+- Update dependencies in `requirements.txt`.
+- Extend test cases in `login_test.py` for additional scenarios.
+- For advanced reporting and CI/CD, integrate with `.github/workflows/ci.yml`.
 
-## Recommendations for Future Improvements
-- Integrate with CI/CD (GitHub Actions, Jenkins).
-- Add support for 2FA, CSRF tokens, and negative testing.
-- Modularize for multi-user and multi-endpoint scenarios.
-- Generate HTML test reports for enhanced visibility.
+## Support & Resources
+- [pytest documentation](https://docs.pytest.org/en/stable/)
+- [requests documentation](https://docs.python-requests.org/en/latest/)
+- [GitHub Actions](https://docs.github.com/en/actions)
 
-## Support Resources
-- Python Docs: https://docs.python.org/3/
-- Pytest Docs: https://docs.pytest.org/en/stable/
-- Requests Docs: https://requests.readthedocs.io/en/latest/
-
----
-*Project delivered by Senior QA Automation & DevOps Integrator.*
+## Recommendations
+- Use CI/CD for automated test execution and result reporting.
+- Never commit real secrets; use `.env.template` and environment variables.
+- Expand tests for multi-user and negative scenarios as needed.
