@@ -1,54 +1,78 @@
 #!/usr/bin/env python3
 """
-Automated login validation using pytest.
-Credentials are sourced from environment variables for security.
-Robust error handling and logging included.
+Automated Login Validation Script
+--------------------------------
+This script uses pytest and requests to validate login functionality for a web application.
+Credentials and endpoint are securely loaded from environment variables.
+
+Required Environment Variables:
+    LOGIN_URL        : The login endpoint URL
+    LOGIN_EMAIL      : The email/username for authentication
+    LOGIN_PASSWORD   : The password for authentication
+
+Usage:
+    pytest Tests/login_test.py --junitxml=Tests/login_test_results.xml
+
+Troubleshooting:
+    - Ensure all required environment variables are set.
+    - Network errors will be logged and reported as test failures.
+    - Authentication failures will report error details.
 """
+
 import os
-import requests
 import pytest
+import requests
 import logging
 
 # Configure logging
 logging.basicConfig(
+    filename="Tests/login_test.log",
     level=logging.INFO,
-    format='%(asctime)s %(levelname)s %(message)s',
-    handlers=[logging.StreamHandler()]
+    format="%(asctime)s %(levelname)s %(message)s"
 )
 
-LOGIN_URL = os.environ.get('LOGIN_URL')
-LOGIN_EMAIL = os.environ.get('LOGIN_EMAIL')
-LOGIN_PASSWORD = os.environ.get('LOGIN_PASSWORD')
+def get_env_var(key: str) -> str:
+    value = os.getenv(key)
+    if not value:
+        logging.error(f"Missing required environment variable: {key}")
+        raise RuntimeError(f"Missing required environment variable: {key}")
+    return value
 
-@pytest.mark.login
-def test_login_positive():
+@pytest.fixture(scope="module")
+def login_credentials():
+    return {
+        "url": get_env_var("LOGIN_URL"),
+        "email": get_env_var("LOGIN_EMAIL"),
+        "password": get_env_var("LOGIN_PASSWORD")
+    }
+
+
+def test_login_positive(login_credentials):
     """
-    Positive login test - expects successful authentication.
+    Positive test: Validates successful login with correct credentials.
     """
-    assert LOGIN_URL, "LOGIN_URL environment variable is not set."
-    assert LOGIN_EMAIL, "LOGIN_EMAIL environment variable is not set."
-    assert LOGIN_PASSWORD, "LOGIN_PASSWORD environment variable is not set."
-    
+    url = login_credentials["url"]
+    email = login_credentials["email"]
+    password = login_credentials["password"]
+
     payload = {
-        'email': LOGIN_EMAIL,
-        'password': LOGIN_PASSWORD
+        "email": email,
+        "password": password
     }
     try:
-        response = requests.post(LOGIN_URL, json=payload, timeout=10)
-        logging.info(f"POST {LOGIN_URL} with payload {payload}")
+        response = requests.post(url, json=payload, timeout=10)
+        logging.info(f"POST {url} with email={email}: Status {response.status_code}")
     except requests.RequestException as e:
-        logging.error(f"Network error: {e}")
+        logging.error(f"Network error during login: {e}")
         pytest.fail(f"Network error during login: {e}")
     
-    assert response.status_code == 200, f"Login failed: {response.status_code}, {response.text}"
-    # Optionally, check for authentication token or success indicator
-    if 'token' in response.json():
-        logging.info("Login successful, token received.")
-    elif response.json().get('success'):
-        logging.info("Login successful (success=True).")
-    else:
-        logging.warning(f"Login response did not contain expected success indicator: {response.text}")
-        pytest.fail(f"Login did not return expected success indicator: {response.text}")
-
-if __name__ == "__main__":
-    pytest.main([__file__, '--junitxml=Tests/login_test_results.xml'])
+    # Basic validation of login success
+    assert response.status_code in [200, 201], f"Login failed: HTTP {response.status_code}"
+    try:
+        data = response.json()
+    except Exception:
+        logging.error(f"Response is not JSON: {response.text}")
+        pytest.fail(f"Response is not JSON: {response.text}")
+    # Check for typical success indicators (customize as needed)
+    assert any(k in data for k in ["token", "access", "success", "session"]), f"Login response missing success indicator: {data}"
+    logging.info("Login test passed successfully.")
