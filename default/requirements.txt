@@ -1,4 +1,4 @@
-# Python version for reproducibility
-python_version == 3.11
-pytest==7.4.4
+# Requirements for login automation
+pytest==7.4.3
 requests==2.31.0
+# Python version required: 3.11
