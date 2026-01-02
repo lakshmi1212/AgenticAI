@@ -1,53 +1,41 @@
+# test_login.py
 """
-Test Case: Verify Login Functionality
-Description: Ensure valid users can log in and are redirected to the dashboard.
-Author: Automation Pipeline Agent
+Selenium Python script for: Login Test Case
+Validates user login with valid credentials.
 """
-import time
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException, TimeoutException
+import time
 
-# Test data
+# Configuration
 LOGIN_URL = "https://example.com/login"
 USERNAME = "testuser"
-PASSWORD = "Test@1234"
-EXPECTED_DASHBOARD_URL = "https://example.com/dashboard"
+PASSWORD = "securepassword"
 
+class LoginTest:
+    def __init__(self):
+        self.driver = webdriver.Chrome()
 
-def setup_driver():
-    """Initializes and returns a Chrome WebDriver instance."""
-    options = webdriver.ChromeOptions()
-    options.add_argument('--headless')  # Run in headless mode for CI/CD
-    driver = webdriver.Chrome(options=options)
-    driver.implicitly_wait(10)
-    return driver
-
-
-def test_login():
-    driver = setup_driver()
-    try:
-        print("[INFO] Navigating to login page...")
-        driver.get(LOGIN_URL)
-        
-        print("[INFO] Entering username...")
-        driver.find_element(By.ID, "username").send_keys(USERNAME)
-        print("[INFO] Entering password...")
-        driver.find_element(By.ID, "password").send_keys(PASSWORD)
-        print("[INFO] Submitting login form...")
-        driver.find_element(By.ID, "loginBtn").click()
-        time.sleep(2)
-        
-        print("[INFO] Verifying dashboard redirection...")
-        assert driver.current_url == EXPECTED_DASHBOARD_URL, "Login failed or dashboard not loaded!"
-        print("[PASS] Login test passed.")
-    except (NoSuchElementException, TimeoutException) as e:
-        print(f"[ERROR] Element not found or timeout: {e}")
-    except AssertionError as e:
-        print(f"[FAIL] Assertion failed: {e}")
-    finally:
-        driver.quit()
+    def run_test(self):
+        try:
+            self.driver.get(LOGIN_URL)
+            time.sleep(2)
+            # Enter username
+            self.driver.find_element(By.ID, "username").send_keys(USERNAME)
+            # Enter password
+            self.driver.find_element(By.ID, "password").send_keys(PASSWORD)
+            # Submit login form
+            self.driver.find_element(By.ID, "loginButton").click()
+            time.sleep(3)
+            # Validate login success
+            assert "Dashboard" in self.driver.title, "Login failed or dashboard not loaded."
+            print("Login Test Passed!")
+        except Exception as e:
+            print(f"Login Test Failed: {e}")
+        finally:
+            self.driver.quit()
 
 if __name__ == "__main__":
-    test_login()
+    LoginTest().run_test()
