@@ -1,87 +1,98 @@
 # Selenium Automation Suite
 
 ## Project Overview
-This repository contains production-ready Python Selenium scripts generated automatically from validated test cases. The suite enables robust UI automation for web applications, supporting modular, maintainable, and scalable test development.
+This repository automates the conversion of validated test cases into production-ready Selenium Python scripts. Each script is generated from a Jira-derived test case and committed to this repository with full documentation and error handling.
 
-## Key Features
-- Automated script generation from structured test cases
-- Modular Python code following best practices (Page Object Model, error handling, clear comments)
-- Secure integration with GitHub for version control
-- Comprehensive documentation for setup, usage, troubleshooting, and maintenance
+## Key Achievements
+- Automated generation of Selenium scripts from validated test cases
+- Batch commit and push to GitHub
+- Comprehensive documentation for setup, usage, and troubleshooting
 
-## Setup Instructions
+## Success Metrics
+- Number of scripts generated per run
+- Commit success rate
+- Documentation completeness
 
-### Prerequisites
-- Python 3.8+
-- Google Chrome (or desired browser)
-- ChromeDriver (or relevant WebDriver)
-- Git
+## Requirements Assessment
+- Input: Validated test cases, GitHub token, repo URL, branch
+- Output: Selenium scripts, README.md, commit logs
 
-### Python Dependencies
-Install required packages:
-```bash
-pip install selenium pytest
-```
+## Technical Approach
+- Modular Python code (Page Object Model recommended)
+- Secure GitHub API integration
+- Robust error handling and logging
 
-### WebDriver Setup
-Download ChromeDriver from [here](https://chromedriver.chromium.org/downloads) and ensure it is in your PATH.
+## Implementation Details
+1. Retrieve validated test cases
+2. Parse and validate structure
+3. Generate maintainable Selenium Python scripts
+4. Commit scripts to `/tests/` directory
+5. Document operations and errors
 
-## Repository Structure
-```
-/tests/               # Contains all Selenium Python test scripts
-/README.md            # Project documentation
-```
+## Quality Assurance
+- All scripts linted and syntax-checked
+- Commit verification and error logging
+- Secure handling of tokens and credentials
 
-## Usage Guidelines
-1. Clone the repository:
+## Deliverables
+- `/tests/` directory: Selenium Python scripts
+- `/README.md`: Project documentation
+- Commit logs and status reports
+
+## Implementation Guide
+### Setup Instructions
+1. **Install Python 3.8+**
+2. **Install dependencies:**
    ```bash
-   git clone https://github.com/lakshmi1212/AgenticAI.git
-   cd AgenticAI
+   pip install selenium
    ```
-2. Review and configure `/tests/` scripts as needed.
-3. Run tests using pytest:
-   ```bash
-   pytest tests/
-   ```
+3. **Configure Git:** Ensure your GitHub token is valid and has repo permissions.
 
-## Configuration Steps
-- Provide your GitHub Personal Access Token (PAT) securely (never commit secrets).
-- Specify the target branch for script commits (default: `main`).
-- Scripts are auto-generated and committed to `/tests/` directory.
+### Configuration Steps
+- Provide your GitHub token, target repo URL, and branch when running the agent.
 
-## Maintenance Procedures
-- To update scripts, modify test case sources and re-run the generation agent.
-- Extend functionality by adding new test case templates or enhancing the Page Object Model.
+### Usage Guidelines
+- Run the agent to process validated test cases and push scripts to GitHub.
+- Scripts appear in `/tests/` with descriptive filenames.
 
-## Troubleshooting Guide
+### Maintenance Procedures
+- To update scripts, rerun the agent with new test cases.
+- Extend functionality by modifying script templates or adding new modules.
+
+## Quality Assurance Report
+- **Testing Summary:** All scripts pass linting and dry-run validation.
+- **Performance Metrics:** Scripts generated per batch, commit success rate.
+- **Security Assessment:** No tokens stored in code or logs.
+- **Compliance:** Follows Python Selenium and documentation standards.
+
+## Troubleshooting and Support
 ### Common Issues
-- **Invalid test cases:** Ensure input structure matches required format.
-- **Git errors:** Check remote repository access, branch name, and PAT validity.
-- **WebDriver issues:** Confirm correct driver version and PATH setup.
-- **Environment setup:** Verify Python and package installations.
+- **Invalid Test Case:** Ensure test case is fully structured and validated.
+- **Git Errors:** Check token validity, repo access, and branch existence.
+- **Environment Setup:** Python/Selenium must be installed and in PATH.
 
 ### Diagnostic Procedures
-- Review logs in commit history for warnings/errors.
-- Use `pytest --maxfail=1 --disable-warnings -v` for verbose test output.
+- Review agent logs for error messages.
+- Use `git status` to verify commit.
 
-## Support & Contacts
-- For issues, open a GitHub issue in this repo.
-- For urgent support, contact project maintainers via listed emails in repo settings.
+### Support Resources
+- [Selenium Documentation](https://www.selenium.dev/documentation/)
+- [GitHub Support](https://support.github.com/)
 
-## Contribution Guidelines
-- Fork the repo, create a feature branch, and submit pull requests.
-- Ensure all scripts follow PEP8 and Selenium best practices.
+### Escalation Procedures
+- If issues persist, contact the automation engineering team or repo maintainer.
 
-## Enhancement & Future Roadmap
-- Support for other languages/frameworks (e.g., Playwright, Cypress)
-- Batch/parallel script generation
-- CI/CD integration
-- Cloud test execution
+## Future Considerations
+- Extend support for additional frameworks (e.g., Playwright, Cypress)
+- Enable parallel/batch script generation for scalability
+- Integrate with CI/CD pipelines for automated testing
+- Plan regular maintenance and update cycles
 
-## Commit Log Sample
-- `Add Selenium scripts for validated test cases [timestamp]`
+## Sample Files
+- `/tests/test_login.py`: Example generated script
+- `/README.md`: This documentation
+- Commit log: `Add Selenium scripts for validated test cases [timestamp]`
 
 ---
 
-## License
-This project is licensed under the MIT License.
+For questions or contributions, please submit an issue or pull request.
