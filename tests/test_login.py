@@ -1,56 +1,40 @@
+#!/usr/bin/env python3
 """
-Selenium Test Script: Login Functionality
-Generated automatically from validated test case
+Selenium automation script for validated test case: Login functionality
+Author: Automation Agent
 """
 import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException
-import time
+from selenium.webdriver.chrome.options import Options
 
 class TestLogin(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        cls.driver = webdriver.Chrome()
-        cls.driver.implicitly_wait(10)
-        cls.base_url = "https://example.com/login"
+    def setUp(self):
+        chrome_options = Options()
+        chrome_options.add_argument('--headless')
+        self.driver = webdriver.Chrome(options=chrome_options)
+        self.driver.implicitly_wait(10)
 
-    @classmethod
-    def tearDownClass(cls):
-        cls.driver.quit()
-
-    def test_valid_login(self):
+    def test_login_valid_user(self):
         driver = self.driver
-        driver.get(self.base_url)
-        # Enter username
-        driver.find_element(By.ID, "username").send_keys("testuser")
-        # Enter password
-        driver.find_element(By.ID, "password").send_keys("securepassword")
-        # Submit form
-        driver.find_element(By.ID, "loginBtn").click()
-        time.sleep(2)
-        # Assert login success
-        try:
-            welcome = driver.find_element(By.ID, "welcomeMessage")
-            self.assertIn("Welcome", welcome.text)
-        except NoSuchElementException:
-            self.fail("Login failed: Welcome message not found.")
+        driver.get('https://example.com/login')
+        driver.find_element(By.ID, 'username').send_keys('valid_user')
+        driver.find_element(By.ID, 'password').send_keys('valid_password')
+        driver.find_element(By.ID, 'loginBtn').click()
+        self.assertIn('Dashboard', driver.title)
 
-    def test_invalid_login(self):
+    def test_login_invalid_user(self):
         driver = self.driver
-        driver.get(self.base_url)
-        # Enter invalid credentials
-        driver.find_element(By.ID, "username").send_keys("wronguser")
-        driver.find_element(By.ID, "password").send_keys("wrongpassword")
-        driver.find_element(By.ID, "loginBtn").click()
-        time.sleep(2)
-        # Assert error message
-        try:
-            error = driver.find_element(By.ID, "errorMessage")
-            self.assertIn("Invalid", error.text)
-        except NoSuchElementException:
-            self.fail("Error message not found for invalid login.")
+        driver.get('https://example.com/login')
+        driver.find_element(By.ID, 'username').send_keys('invalid_user')
+        driver.find_element(By.ID, 'password').send_keys('wrong_password')
+        driver.find_element(By.ID, 'loginBtn').click()
+        error = driver.find_element(By.ID, 'errorMsg').text
+        self.assertEqual(error, 'Invalid credentials')
 
-if __name__ == "__main__":
+    def tearDown(self):
+        self.driver.quit()
+
+if __name__ == '__main__':
     unittest.main()
