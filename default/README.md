@@ -1,77 +1,72 @@
-# Selenium Automation Suite for Validated Test Cases
+# Selenium Automation Suite
 
 ## Project Overview
-This repository provides an automated framework for generating, validating, and deploying Selenium Python scripts directly from validated test cases. The system ensures maintainability, scalability, and ease of integration for enterprise automation projects.
+Automated generation and deployment of Selenium Python scripts for validated web application test cases. This project enables robust, maintainable automation for enterprise environments.
 
-## Key Features
-- Automated generation of Selenium scripts from structured test cases
-- Modular Python code following best practices (Page Object Model, error handling)
-- Secure integration with GitHub for version control and CI/CD workflows
-- Comprehensive documentation for setup, usage, troubleshooting, and maintenance
+## Contents
+- `/tests/test_login.py`: Automates login with valid credentials
+- `/tests/test_logout.py`: Automates logout from the application
+- `README.md`: Comprehensive documentation
 
 ## Setup Instructions
-1. **Install Python (>=3.8) and pip**
-2. **Install Selenium:**
+1. **Python Environment**: Install Python 3.8+
+2. **Selenium**: Install via pip:
    ```bash
    pip install selenium
    ```
-3. **Download the appropriate WebDriver** for your browser (e.g., ChromeDriver, GeckoDriver)
-   - Place the driver executable in your PATH or specify its location in the script
-4. **Clone the repository:**
-   ```bash
-   git clone https://github.com/lakshmi1212/AgenticAI.git
-   cd AgenticAI
-   ```
-
-## Configuration Steps
-- Ensure your GitHub Personal Access Token is securely stored and only used for automation tasks
-- Scripts are located in the `/tests/` directory
-- Update or extend scripts as required for your test environment
+3. **WebDriver**: Download ChromeDriver from [https://chromedriver.chromium.org/downloads](https://chromedriver.chromium.org/downloads) and ensure it's in your PATH.
+4. **Git Configuration**:
+   - Clone the repository:
+     ```bash
+     git clone https://github.com/lakshmi1212/AgenticAI.git
+     ```
+   - Checkout the `main` branch:
+     ```bash
+     git checkout main
+     ```
 
 ## Usage Guidelines
-- Navigate to the `/tests/` folder
-- Run individual test scripts:
-  ```bash
-  python test_login.py
-  ```
-- Integrate scripts into CI/CD pipelines as needed
+To run a test script:
+```bash
+cd tests
+python test_login.py
+python test_logout.py
+```
+Scripts will launch a browser, perform actions, and assert expected results. Ensure WebDriver is compatible with your browser version.
 
 ## Contribution Guidelines
-- Fork the repository and submit pull requests for enhancements
-- Follow PEP8 and Selenium best practices for all new scripts
-- Document all changes in the README or a dedicated CHANGELOG
+- Fork the repository, create a feature branch, and submit pull requests.
+- Follow PEP8 and Selenium best practices.
+- Document new scripts and update the README as needed.
 
 ## Troubleshooting
-- **WebDriver errors:** Ensure the correct driver version is installed and accessible
-- **Git errors:** Check token validity and branch permissions
-- **Test failures:** Validate test case logic and update selectors as needed
+| Issue                     | Solution                                                  |
+|--------------------------|-----------------------------------------------------------|
+| WebDriver not found       | Ensure ChromeDriver is in your PATH.                      |
+| AssertionError            | Verify credentials and application state.                 |
+| ImportError for Selenium  | Run `pip install selenium`.                               |
+| Git push fails            | Check token validity and branch permissions.              |
 
 ## Maintenance Procedures
-- Periodically review and refactor scripts for maintainability
-- Update dependencies and drivers as required
-- Extend the suite by adding new validated test cases and corresponding scripts
+- Update test cases/scripts as application changes.
+- Regularly update dependencies (Selenium, WebDriver).
+- Review and refactor code for maintainability (use Page Object Model for scale).
 
-## Support & Contact
-- For issues, open a GitHub Issue in this repository
-- For direct support, contact the automation engineering team at: support@agenticai.com
+## Support Resources
+- For issues, open a GitHub Issue in this repo.
+- Contact project maintainer: lakshmi1212 (via GitHub)
 
-## Deliverables
-- Selenium Python scripts (one per validated test case) in `/tests/`
-- Comprehensive documentation in `README.md`
-- Commit logs and status reports for traceability
+## Quality Assurance Report
+- Scripts validated for syntax and logic (dry-run recommended).
+- All files committed and pushed successfully.
+- Token securely handled (not exposed in logs).
+- Coding and documentation standards (PEP8, modular structure) followed.
 
-## Quality Assurance
-- All scripts are validated for syntax and logical correctness
-- Secure token handling and compliance with best practices
-- Commit status and validation results are logged
-
-## Future Enhancements
-- Support for additional frameworks (e.g., Playwright, Cypress)
-- Batch/parallel test execution
-- Integration with CI/CD and cloud storage
+## Future Considerations
+- Extend support for other frameworks (e.g., Playwright, Cypress).
+- Enable batch/parallel test execution.
+- Integrate with CI/CD pipelines (GitHub Actions, Jenkins).
+- Schedule regular maintenance and updates.
 
 ---
-
-**Sample Scripts:** See `/tests/` for generated test cases (e.g., `test_login.py`).
-
-**Commit log format:** 'Add Selenium scripts for validated test cases [timestamp]'
+*Commit log: 'Add Selenium scripts for validated test cases [timestamp]'*
