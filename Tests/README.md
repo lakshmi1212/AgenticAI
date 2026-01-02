@@ -1,37 +1,45 @@
 # Login Automation Test Suite
 
 ## Overview
-Automated login validation using Python, pytest, and requests. Credentials are managed securely via environment variables.
+Automated login validation using Python, pytest, and requests. Validates both successful and failed login attempts. Designed for secure, maintainable, and robust test automation with DevOps integration.
 
 ## Setup Instructions
-1. Install Python 3.11
-2. Clone the repository
-3. Copy `Tests/.env.template` to `.env` and fill in your credentials
-4. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+1. **Python Installation:**
+   - Requires Python 3.11
+2. **Install Dependencies:**
+   - `pip install -r requirements.txt`
+3. **Configure Environment Variables:**
+   - Copy `Tests/.env.template` to `.env` and fill in actual values for:
+     - `LOGIN_URL`
+     - `LOGIN_EMAIL`
+     - `LOGIN_PASSWORD`
+     - `INVALID_PASSWORD`
+   - Use a tool like [python-dotenv](https://pypi.org/project/python-dotenv/) or export variables in your shell.
 
-## Running Tests
-```bash
-pytest Tests/login_test.py --junitxml=Tests/login_test_results.xml
-```
+## Usage Guidelines
+- Run tests:
+  ```bash
+  pytest Tests/login_test.py --junitxml=Tests/login_test_results.xml
+  ```
+- Review results in the generated XML file.
 
-## Configuration
-- Credentials and login endpoint are set via environment variables.
-- See `.env.template` for required variables.
+## Troubleshooting Guide
+- **Network Errors:** Ensure LOGIN_URL is correct and accessible.
+- **Authentication Failures:** Verify credentials in .env.
+- **Missing Environment Variables:** Ensure all required secrets are set.
+- **Git Errors:** Confirm repository access and token validity.
 
-## Troubleshooting
-- **Network errors**: Check your LOGIN_URL and network connectivity.
-- **Authentication failures**: Verify credentials in your .env file.
-- **Git errors**: Ensure you have proper permissions and your token is valid.
+## Maintenance Procedures
+- Update test scripts as authentication logic changes.
+- Regenerate `.env.template` if required secrets change.
+- Extend test cases in `login_test.py` for additional scenarios.
 
-## Maintenance
-- Update dependencies in `requirements.txt` as needed.
-- Extend tests by adding more cases to `login_test.py`.
-- Keep secrets out of version control.
+## Recommendations for Future Improvements
+- Integrate with CI/CD pipelines (see .github/workflows/ci.yml)
+- Add multi-user and advanced negative test cases
+- Enhance reporting (HTML, notifications)
 
-## Future Improvements
-- Integrate with CI/CD pipelines (.github/workflows/ci.yml)
-- Support for additional authentication methods
-- Advanced reporting and test data management
+## Support Resources
+- [pytest documentation](https://docs.pytest.org/)
+- [requests documentation](https://docs.python-requests.org/)
+- [GitHub Actions](https://docs.github.com/en/actions)
