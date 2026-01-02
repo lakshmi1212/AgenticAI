@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
 Automated login validation using pytest.
-Credentials and endpoint are sourced from environment variables for security.
-Generates JUnit XML report for integration with CI/CD pipelines.
+Credentials are sourced from environment variables for security.
+Robust error handling and logging included.
 """
 import os
 import requests
@@ -10,49 +10,45 @@ import pytest
 import logging
 
 # Configure logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
-logger = logging.getLogger("login_test")
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s %(levelname)s %(message)s',
+    handlers=[logging.StreamHandler()]
+)
 
-LOGIN_URL = os.getenv("LOGIN_URL")
-LOGIN_EMAIL = os.getenv("LOGIN_EMAIL")
-LOGIN_PASSWORD = os.getenv("LOGIN_PASSWORD")
-
-def is_env_configured():
-    missing = []
-    for var in ["LOGIN_URL", "LOGIN_EMAIL", "LOGIN_PASSWORD"]:
-        if not os.getenv(var):
-            missing.append(var)
-    return missing
+LOGIN_URL = os.environ.get('LOGIN_URL')
+LOGIN_EMAIL = os.environ.get('LOGIN_EMAIL')
+LOGIN_PASSWORD = os.environ.get('LOGIN_PASSWORD')
 
 @pytest.mark.login
-def test_login():
+def test_login_positive():
     """
-    Positive test: Validate login with correct credentials.
+    Positive login test - expects successful authentication.
     """
-    missing = is_env_configured()
-    assert not missing, f"Missing environment variables: {', '.join(missing)}"
-
+    assert LOGIN_URL, "LOGIN_URL environment variable is not set."
+    assert LOGIN_EMAIL, "LOGIN_EMAIL environment variable is not set."
+    assert LOGIN_PASSWORD, "LOGIN_PASSWORD environment variable is not set."
+    
     payload = {
-        "email": LOGIN_EMAIL,
-        "password": LOGIN_PASSWORD
+        'email': LOGIN_EMAIL,
+        'password': LOGIN_PASSWORD
     }
     try:
-        response = requests.post(LOGIN_URL, data=payload, timeout=10)
-        logger.info(f"Login POST to {LOGIN_URL}, status_code={response.status_code}")
-    except requests.exceptions.RequestException as e:
-        logger.error(f"Network error during login: {e}")
-        pytest.fail(f"Network error: {e}")
-
-    assert response.status_code == 200, f"Expected 200 OK, got {response.status_code}"
-    # Example: check for login success indicator in response
-    try:
-        result = response.json()
-        assert result.get("success", False), f"Login failed: {result}"
-    except Exception as e:
-        logger.error(f"Error parsing response JSON: {e}")
-        pytest.fail(f"Error parsing response JSON: {e}")
-
-    logger.info("Login test passed.")
+        response = requests.post(LOGIN_URL, json=payload, timeout=10)
+        logging.info(f"POST {LOGIN_URL} with payload {payload}")
+    except requests.RequestException as e:
+        logging.error(f"Network error: {e}")
+        pytest.fail(f"Network error during login: {e}")
+    
+    assert response.status_code == 200, f"Login failed: {response.status_code}, {response.text}"
+    # Optionally, check for authentication token or success indicator
+    if 'token' in response.json():
+        logging.info("Login successful, token received.")
+    elif response.json().get('success'):
+        logging.info("Login successful (success=True).")
+    else:
+        logging.warning(f"Login response did not contain expected success indicator: {response.text}")
+        pytest.fail(f"Login did not return expected success indicator: {response.text}")
 
 if __name__ == "__main__":
-    pytest.main([__file__, "--junitxml=login_test_results.xml"])
+    pytest.main([__file__, '--junitxml=Tests/login_test_results.xml'])
