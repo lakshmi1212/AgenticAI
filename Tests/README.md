@@ -1,45 +1,50 @@
-# Login Automation with Python & Pytest
+# Login Automation Test Suite
 
 ## Overview
-Automated login validation using Python, pytest, and requests. Credentials are securely managed via environment variables. Includes positive and negative test cases.
+Automated login validation using Python, pytest, and requests. Credentials are managed securely via environment variables. Includes robust error handling and logging.
 
 ## Setup Instructions
-1. Clone the repository.
-2. Copy `Tests/.env.template` to `.env` and fill in actual values for:
-   - LOGIN_URL
-   - LOGIN_EMAIL
-   - LOGIN_PASSWORD
-   - INVALID_PASSWORD
-3. Install Python 3.11 and dependencies:
-   ```bash
+1. **Clone the Repository:**
+   ```sh
+   git clone https://github.com/lakshmi1212/AgenticAI.git
+   cd AgenticAI
+   ```
+2. **Install Python 3.11 and pip:**
+   Ensure Python version is 3.11. Install dependencies:
+   ```sh
    pip install -r requirements.txt
    ```
+3. **Configure Secrets:**
+   - Copy `Tests/.env.template` to `.env` and fill in LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD.
+   - Export secrets to environment variables or use a tool like `python-dotenv`.
 
 ## Running Tests
-```bash
+```sh
 pytest Tests/login_test.py --junitxml=Tests/login_test_results.xml
 ```
 
-## Configuration
-- All secrets are managed via environment variables. Never commit actual credentials.
-- Update `.env` for different environments/users.
+## Test Results
+- Results are saved in `Tests/login_test_results.xml` (JUnit format).
+- Detailed logs in `Tests/login_test.log`.
 
 ## Troubleshooting
-- **Network errors**: Ensure LOGIN_URL is reachable.
-- **Authentication failures**: Verify credentials and endpoint.
-- **Git errors**: Ensure you have push access and correct branch.
+- **Network Errors:** Check internet connection and LOGIN_URL.
+- **Authentication Failures:** Verify credentials and endpoint.
+- **Git Errors:** Confirm access rights and remote settings.
 
 ## Maintenance
-- Update scripts and `.env.template` for new test cases or credential changes.
-- Extend tests for new authentication methods as needed.
+- Update scripts as needed, add new test cases in `Tests/`.
+- NEVER commit `.env` with secrets.
+- Review dependencies in `requirements.txt` regularly.
 
-## Support & Future Enhancements
-- Integrate with CI/CD using GitHub Actions (`.github/workflows/ci.yml`).
-- Modularize for multi-user or multi-endpoint scenarios.
-- Add advanced reporting and test data management.
+## Security Notes
+- No credentials are hardcoded; always use environment variables.
+- Sensitive files (e.g., `.env`) should be excluded from git.
 
-## Required Secrets
-- LOGIN_URL
-- LOGIN_EMAIL
-- LOGIN_PASSWORD
-- INVALID_PASSWORD
+## Recommendations
+- Integrate with CI/CD via `.github/workflows/ci.yml`.
+- Extend for multi-user, 2FA, and advanced reporting as needed.
+
+## Support & Escalation
+- For persistent issues, review logs and consult documentation.
+- Escalate to DevOps or security for unresolved authentication problems.
