@@ -1,4 +1,3 @@
-# Requirements for login automation
+# Python version: 3.11
 pytest==7.4.3
 requests==2.31.0
-# Python version required: 3.11
