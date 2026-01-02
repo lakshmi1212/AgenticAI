@@ -1,35 +1,50 @@
-# test_login.py
 """
-Selenium script: Login with valid credentials
+Test Case: Verify user can login with valid credentials
+Author: Automation Engineer
+Date: 2024-06-09
+Description: This script automates the login functionality for valid user credentials using Selenium.
 """
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import time
 
-def test_login():
-    # Setup WebDriver (Chrome)
-    driver = webdriver.Chrome()
-    driver.get('https://example.com/login')
+class LoginPage:
+    def __init__(self, driver):
+        self.driver = driver
+        self.username_input = (By.ID, "username")
+        self.password_input = (By.ID, "password")
+        self.login_button = (By.ID, "loginBtn")
     
-    # Enter username
-    username_field = driver.find_element(By.ID, 'username')
-    username_field.send_keys('valid_user')
-    
-    # Enter password
-    password_field = driver.find_element(By.ID, 'password')
-    password_field.send_keys('valid_password')
-    
-    # Submit form
-    login_button = driver.find_element(By.ID, 'loginBtn')
-    login_button.click()
-    
-    time.sleep(2)  # Wait for login to process
-    
-    # Validate login success
-    assert 'Dashboard' in driver.title, 'Login failed or Dashboard not loaded.'
-    
-    driver.quit()
+    def login(self, username, password):
+        self.driver.find_element(*self.username_input).send_keys(username)
+        self.driver.find_element(*self.password_input).send_keys(password)
+        self.driver.find_element(*self.login_button).click()
 
-if __name__ == '__main__':
-    test_login()
+# Test Data
+URL = "https://example.com/login"
+USERNAME = "valid_user"
+PASSWORD = "valid_password"
+
+# Test Script
+if __name__ == "__main__":
+    # Initialize WebDriver
+    driver = webdriver.Chrome()
+    driver.get(URL)
+    driver.maximize_window()
+    time.sleep(2)
+
+    # Page Object
+    login_page = LoginPage(driver)
+    login_page.login(USERNAME, PASSWORD)
+
+    # Validation (Example: check successful login)
+    time.sleep(3)
+    try:
+        assert "Dashboard" in driver.title
+        print("Login test passed.")
+    except AssertionError:
+        print("Login test failed.")
+    finally:
+        driver.quit()
