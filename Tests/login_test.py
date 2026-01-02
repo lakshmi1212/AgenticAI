@@ -1,55 +1,41 @@
 #!/usr/bin/env python3
 """
-Pytest script for automated login validation.
-- Reads credentials and URL from environment variables.
-- Validates both successful and failed login attempts.
-- Uses requests library for HTTP interactions.
-- Robust error handling, logging, and reporting.
+Pytest login automation for validating authentication with positive and negative test cases.
+Credentials are loaded from environment variables for security.
 """
 import os
-import pytest
 import requests
-import logging
+import pytest
 
-# Setup logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
+LOGIN_URL = os.getenv("LOGIN_URL")
+LOGIN_EMAIL = os.getenv("LOGIN_EMAIL")
+LOGIN_PASSWORD = os.getenv("LOGIN_PASSWORD")
+INVALID_PASSWORD = os.getenv("INVALID_PASSWORD")
 
-LOGIN_URL = os.getenv('LOGIN_URL')
-LOGIN_EMAIL = os.getenv('LOGIN_EMAIL')
-LOGIN_PASSWORD = os.getenv('LOGIN_PASSWORD')
-INVALID_PASSWORD = os.getenv('INVALID_PASSWORD')
+@pytest.fixture(scope="module")
+def session():
+    return requests.Session()
 
-@pytest.mark.parametrize('email,password,expected_status', [
-    (LOGIN_EMAIL, LOGIN_PASSWORD, 'success'),
-    (LOGIN_EMAIL, INVALID_PASSWORD, 'failure'),
+@pytest.mark.parametrize("password,is_valid", [
+    (LOGIN_PASSWORD, True),
+    (INVALID_PASSWORD, False)
 ])
-def test_login(email, password, expected_status):
-    """
-    Attempts login and asserts outcome based on credentials.
-    """
-    assert LOGIN_URL, "LOGIN_URL environment variable not set!"
-    assert email, "LOGIN_EMAIL environment variable not set!"
-    assert password, "LOGIN_PASSWORD or INVALID_PASSWORD not set!"
-    
+def test_login(session, password, is_valid):
+    assert LOGIN_URL, "LOGIN_URL environment variable not set."
+    assert LOGIN_EMAIL, "LOGIN_EMAIL environment variable not set."
+    assert password, "Password parameter not set."
+    payload = {
+        "email": LOGIN_EMAIL,
+        "password": password
+    }
     try:
-        # Example payload - adjust according to actual login API
-        payload = {
-            'email': email,
-            'password': password
-        }
-        headers = {
-            'Content-Type': 'application/json'
-        }
-        response = requests.post(LOGIN_URL, json=payload, headers=headers, timeout=10)
-        logging.info(f"Login attempt for {email}: {response.status_code} {response.text}")
-        if expected_status == 'success':
-            assert response.status_code == 200, f"Expected 200 OK, got {response.status_code}"
-            assert 'token' in response.json() or 'access' in response.json(), "No auth token found in response."
-        else:
-            assert response.status_code in [400, 401, 403], f"Expected authentication failure, got {response.status_code}"
+        response = session.post(LOGIN_URL, json=payload, timeout=10)
     except requests.exceptions.RequestException as e:
-        logging.error(f"Network or HTTP error: {e}")
-        pytest.fail(f"Network or HTTP error: {e}")
-    except Exception as e:
-        logging.error(f"Unexpected error: {e}")
-        pytest.fail(f"Unexpected error: {e}")
+        pytest.fail(f"Network error during login: {e}")
+    assert response.status_code in (200, 401, 400), f"Unexpected HTTP status code: {response.status_code}"
+    if is_valid:
+        assert response.status_code == 200, f"Expected successful login, got {response.status_code}"
+        assert "token" in response.json() or "auth" in response.json(), "No authentication token found in response."
+    else:
+        assert response.status_code in (401, 400), f"Expected authentication failure, got {response.status_code}"
+        assert "error" in response.json() or "message" in response.json(), "No error message in failed login response."
