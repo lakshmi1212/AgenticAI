@@ -4,7 +4,7 @@
   "default_branch": "main",
   "python_version": "3.11",
   "test_files": ["Tests/login_test.py"],
-  "dependencies": ["pytest", "requests"],
+  "dependencies": ["pytest", "requests", "python-dotenv"],
   "requirements_file": "requirements.txt",
   "required_secrets": [
     "LOGIN_URL",
