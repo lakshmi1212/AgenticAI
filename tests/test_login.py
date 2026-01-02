@@ -1,50 +1,53 @@
 """
-test_login.py
-Automated Selenium test for login functionality.
-Validated Test Case:
-- Title: Login with valid credentials
+Selenium Python Script: Login Test
+Generated from validated test case
+
+Test Case:
+- Title: Verify successful login
 - Steps:
     1. Navigate to the login page
     2. Enter valid username and password
     3. Click the login button
-    4. Verify successful login (dashboard is displayed)
+    4. Verify user is redirected to the dashboard
+- Expected Result: User lands on dashboard after login
 """
-import unittest
+
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-from selenium.common.exceptions import NoSuchElementException
 import time
+import unittest
 
-class TestLogin(unittest.TestCase):
+class LoginTest(unittest.TestCase):
     def setUp(self):
-        # Setup Chrome WebDriver
+        # Initialize WebDriver (Chrome)
         self.driver = webdriver.Chrome()
         self.driver.implicitly_wait(10)
 
-    def test_login_valid(self):
+    def test_login_success(self):
         driver = self.driver
-        driver.get("https://example.com/login")  # Update with real login URL
+        driver.get('https://example.com/login')  # Replace with actual URL
+
         # Enter username
-        username = driver.find_element(By.ID, "username")
-        username.clear()
-        username.send_keys("valid_user")
+        username_field = driver.find_element(By.ID, 'username')
+        username_field.send_keys('testuser')
+
         # Enter password
-        password = driver.find_element(By.ID, "password")
-        password.clear()
-        password.send_keys("valid_password")
-        # Click login
-        driver.find_element(By.ID, "loginBtn").click()
-        time.sleep(2)
-        # Verify dashboard appears
-        try:
-            dashboard = driver.find_element(By.ID, "dashboard")
-            self.assertTrue(dashboard.is_displayed(), "Dashboard is not displayed after login.")
-        except NoSuchElementException:
-            self.fail("Dashboard element not found - login may have failed.")
+        password_field = driver.find_element(By.ID, 'password')
+        password_field.send_keys('securepassword')
+
+        # Click login button
+        login_button = driver.find_element(By.ID, 'loginBtn')
+        login_button.click()
+
+        # Wait for dashboard to load
+        time.sleep(3)
+
+        # Assert user is redirected to dashboard
+        self.assertIn('dashboard', driver.current_url)
 
     def tearDown(self):
         self.driver.quit()
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     unittest.main()
