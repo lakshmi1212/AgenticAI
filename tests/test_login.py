@@ -1,46 +1,56 @@
 """
-Test Case: User Login Validation
-Description: Verify that a user can successfully log in with valid credentials.
+Selenium Test Script: Login Functionality
+Generated automatically from validated test case
 """
-import pytest
+import unittest
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.common.exceptions import NoSuchElementException
+import time
 
-class LoginPage:
-    def __init__(self, driver):
-        self.driver = driver
-        self.username_field = (By.ID, "username")
-        self.password_field = (By.ID, "password")
-        self.login_button = (By.ID, "loginBtn")
+class TestLogin(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        cls.driver = webdriver.Chrome()
+        cls.driver.implicitly_wait(10)
+        cls.base_url = "https://example.com/login"
 
-    def login(self, username, password):
-        self.driver.find_element(*self.username_field).send_keys(username)
-        self.driver.find_element(*self.password_field).send_keys(password)
-        self.driver.find_element(*self.login_button).click()
+    @classmethod
+    def tearDownClass(cls):
+        cls.driver.quit()
 
-    def is_logged_in(self):
+    def test_valid_login(self):
+        driver = self.driver
+        driver.get(self.base_url)
+        # Enter username
+        driver.find_element(By.ID, "username").send_keys("testuser")
+        # Enter password
+        driver.find_element(By.ID, "password").send_keys("securepassword")
+        # Submit form
+        driver.find_element(By.ID, "loginBtn").click()
+        time.sleep(2)
+        # Assert login success
         try:
-            # Replace with actual element that appears upon successful login
-            self.driver.find_element(By.ID, "dashboard")
-            return True
+            welcome = driver.find_element(By.ID, "welcomeMessage")
+            self.assertIn("Welcome", welcome.text)
         except NoSuchElementException:
-            return False
+            self.fail("Login failed: Welcome message not found.")
 
-@pytest.fixture(scope="function")
-def driver():
-    options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
-    driver = webdriver.Chrome(options=options)
-    yield driver
-    driver.quit()
+    def test_invalid_login(self):
+        driver = self.driver
+        driver.get(self.base_url)
+        # Enter invalid credentials
+        driver.find_element(By.ID, "username").send_keys("wronguser")
+        driver.find_element(By.ID, "password").send_keys("wrongpassword")
+        driver.find_element(By.ID, "loginBtn").click()
+        time.sleep(2)
+        # Assert error message
+        try:
+            error = driver.find_element(By.ID, "errorMessage")
+            self.assertIn("Invalid", error.text)
+        except NoSuchElementException:
+            self.fail("Error message not found for invalid login.")
 
-@pytest.mark.smoke
-def test_user_login_success(driver):
-    driver.get("https://example.com/login")  # Replace with actual login URL
-    login_page = LoginPage(driver)
-    login_page.login("valid_user", "valid_password")  # Replace with test credentials
-    assert login_page.is_logged_in(), "Login failed: Dashboard not found."
-
-# Error handling, logging, and environment setup should be customized per project needs.
+if __name__ == "__main__":
+    unittest.main()
