@@ -1,39 +1,54 @@
-# Login Automation Test Suite
+# Login Automation Tests
 
-## Overview
-Automated Python pytest script to validate login functionality securely and reliably. Credentials are managed via environment variables for best security practices.
+Automated login validation using Python, pytest, and requests.
 
 ## Setup Instructions
-1. Install Python 3.11.
-2. Clone this repository.
-3. Install dependencies:
-    ```
-    pip install -r requirements.txt
-    ```
-4. Copy `.env.template` to `.env` and fill in your credentials.
-5. Export environment variables before running tests:
-    ```
-    export $(grep -v '^#' Tests/.env | xargs)
-    ```
 
-## Usage
-Run the login test and generate a JUnit XML report:
-```
+1. **Python Installation:**
+   - Requires Python 3.11
+   - Install dependencies: `pip install -r requirements.txt`
+
+2. **Environment Configuration:**
+   - Copy `Tests/.env.template` to `.env` and fill in your credentials.
+   - Export environment variables or use a tool like `python-dotenv`.
+
+   ```bash
+   export LOGIN_URL=https://your-login-endpoint.com/api/login
+   export LOGIN_EMAIL=your-email@example.com
+   export LOGIN_PASSWORD=your-password
+   ```
+
+## Running the Test
+
+```bash
 pytest Tests/login_test.py --junitxml=Tests/login_test_results.xml
 ```
 
 ## Troubleshooting Guide
-- **Network errors**: Check your internet connection and LOGIN_URL value.
-- **Authentication failures**: Verify LOGIN_EMAIL and LOGIN_PASSWORD are correct.
-- **Git errors**: Ensure your git credentials and permissions are set up.
-- **Environment variable issues**: Use `printenv` or `echo $VAR` to verify values are set.
 
-## Maintenance
-- Update `.env` for new credentials as needed.
-- Extend `login_test.py` for additional test cases.
-- Update dependencies in `requirements.txt` when needed.
+- **Network Errors:** Check LOGIN_URL and network connectivity.
+- **Authentication Failures:** Verify LOGIN_EMAIL and LOGIN_PASSWORD.
+- **Environment Variables Not Set:** Ensure variables are exported or set in your CI/CD pipeline.
+- **Git Errors:** Confirm repository permissions and PAT validity.
 
-## Recommendations
-- Integrate with CI/CD for automated feedback.
-- Use secrets management tools for production credentials.
-- Extend test coverage for edge cases and error handling.
+## Maintenance Procedures
+
+- Update dependencies in `requirements.txt` as needed.
+- Extend `login_test.py` for more test cases (2FA, negative tests).
+- NEVER commit actual secrets to git.
+
+## Recommendations for Future Improvements
+
+- Integrate with CI/CD for automated test runs.
+- Add multi-user and negative test cases.
+- Enhance reporting (HTML, Slack notifications).
+
+## Support Resources
+
+- [pytest Documentation](https://docs.pytest.org/en/stable/)
+- [requests Documentation](https://docs.python-requests.org/en/latest/)
+- GitHub Issues in this repository.
+
+## Escalation Procedures
+
+- If you encounter persistent issues, escalate to DevOps/Security team with logs and error details.
