@@ -1,89 +1,94 @@
-# Selenium Automation Suite for Validated Test Cases
+# Selenium Automation Suite
 
 ## Project Overview
-This repository contains production-ready Selenium Python scripts automatically generated from validated test cases. The suite enables robust, maintainable UI test automation for web applications, supporting rapid integration and team adoption.
-
-## Key Features
-- Modular Python scripts using Selenium WebDriver
-- Scripts organized by test case in `/tests/`
-- Error handling, clear comments, and maintainable code
-- Batch generation and secure Git integration
-- Comprehensive documentation and troubleshooting guide
+This repository contains an automated pipeline for generating and deploying Selenium Python scripts based on validated test cases. Scripts are created following best practices, committed to this repository, and accompanied by comprehensive documentation.
 
 ## Setup Instructions
-
 ### Prerequisites
 - Python 3.8+
-- [pip](https://pip.pypa.io/en/stable/)
-- [Google Chrome](https://www.google.com/chrome/) (or your target browser)
-- [ChromeDriver](https://chromedriver.chromium.org/downloads) (ensure version matches your browser)
+- pip
+- Google Chrome (or another supported browser)
+- ChromeDriver (or corresponding driver for your browser)
+- Git
 
-### Installation Steps
+### Installation
 1. Clone the repository:
    ```bash
    git clone https://github.com/lakshmi1212/AgenticAI.git
    cd AgenticAI
    ```
-2. (Optional) Create and activate a virtual environment:
-   ```bash
-   python -m venv venv
-   source venv/bin/activate  # On Windows: venv\Scripts\activate
-   ```
-3. Install dependencies:
+2. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-   **Note:** If `requirements.txt` is missing, manually install Selenium:
-   ```bash
-   pip install selenium
-   ```
-4. Download and configure ChromeDriver (or other WebDriver) as needed.
+   The `requirements.txt` file should contain at least:
+   - selenium
+   - pytest (optional for test running)
+
+## Configuration Steps
+- Ensure your GitHub Personal Access Token is kept secure and never committed.
+- Scripts are located in the `/tests/` directory.
+- Update browser drivers as needed for compatibility.
 
 ## Usage Guidelines
-
-To run a test script:
-```bash
-python tests/test_login.py
-```
-(Replace `test_login.py` with your desired script.)
-
-Scripts are designed for direct execution and can be integrated with CI/CD pipelines or test runners (e.g., pytest).
-
-## Directory Structure
-```
-/AgenticAI
-  /tests/           # Selenium scripts (one per test case)
-  README.md         # Project documentation
-  requirements.txt  # Python dependencies
-```
-
-## Contribution Guidelines
-- Fork the repository, create a feature branch, and submit pull requests.
-- Follow PEP8 coding standards and maintain documentation.
-- Review existing scripts for structure and comments before extending.
-
-## Troubleshooting Guide
-| Issue                  | Solution                                                                 |
-|------------------------|--------------------------------------------------------------------------|
-| Selenium Import Error  | Ensure `selenium` is installed (`pip install selenium`)                   |
-| WebDriver Error        | Download matching ChromeDriver version; set PATH environment variable     |
-| Git Authentication     | Use a valid Personal Access Token (do not share in logs or code)          |
-| Test Case Invalid      | Review test case structure; skip or correct as needed                     |
-| Network/Push Failure   | Retry operation; check connectivity and Git permissions                   |
+- Each script in `/tests/` corresponds to a validated test case.
+- Run scripts using:
+   ```bash
+   python tests/test_<feature>.py
+   ```
+- For batch execution, use pytest:
+   ```bash
+   pytest tests/
+   ```
 
 ## Maintenance Procedures
-- Update scripts as application UI changes
-- Regularly review and refactor for maintainability
-- Extend suite by adding new validated test cases
+- To update or add new scripts, follow the test case template and place new scripts in `/tests/`.
+- Review and refactor scripts periodically for maintainability.
 
-## Support & Contacts
-- For issues, open a GitHub issue or contact the repository owner.
-- Documentation and FAQs are maintained in this README.
+## Troubleshooting
+### Common Issues
+- **Invalid test cases:** Ensure test cases follow the required structure (Title, Steps, Expected Result).
+- **Git errors:** Check your network connection and repository access rights.
+- **Environment setup:** Verify Python, Selenium, and browser driver installations.
 
-## Enhancement & Scalability
-- Future support for other browsers, frameworks, and languages
-- Batch/parallel test execution
-- Integration with CI/CD and cloud storage
+### Diagnostic Procedures
+- Check logs for errors.
+- Use `pytest` for syntax and logical validation.
+
+## Support Resources
+- [Selenium Documentation](https://www.selenium.dev/documentation/en/)
+- [GitHub Support](https://support.github.com/)
+- Contact: automation-team@example.com
+
+## Contribution Guidelines
+- Fork the repository and create pull requests for changes.
+- Follow PEP8 coding standards.
+- Include docstrings and comments in all scripts.
+
+## Enhancement Opportunities
+- Extend support for other frameworks (e.g., Playwright, Cypress).
+- Integrate with CI/CD pipelines.
+- Enable batch/parallel test execution.
+
+## Maintenance Schedule
+- Review scripts monthly for updates.
+- Update dependencies quarterly.
 
 ---
-**Generated and maintained by the Automation Pipeline Agent.**
+
+## Commit Log
+- Initial commit: Add README.md and automation instructions.
+
+---
+
+## Sample Directory Structure
+```
+/README.md
+/tests/
+    test_login.py
+    test_search.py
+    test_checkout.py
+```
+
+## License
+MIT
