@@ -1,40 +1,67 @@
 #!/usr/bin/env python3
 """
-Automated login validation using pytest and requests.
-- Credentials and login URL are sourced securely from environment variables.
-- Robust error handling for network/authentication failures.
-- Logs results for troubleshooting.
+Login Automation Test using pytest
+Author: Senior QA Automation Engineer
+
+This script validates login functionality for a web application.
+Credentials and login URL are securely loaded from environment variables.
+
+Test Cases:
+ 1. Successful login with valid credentials
+ 2. Unsuccessful login with invalid password
+
+Usage:
+ - Set environment variables: LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD, INVALID_PASSWORD
+ - Run: pytest Tests/login_test.py --junitxml=Tests/login_test_results.xml
+
 """
 import os
-import pytest
 import requests
-import logging
+import pytest
 
-def get_env_var(name):
-    value = os.getenv(name)
-    if not value:
-        raise EnvironmentError(f"Missing required environment variable: {name}")
-    return value
+LOGIN_URL = os.getenv("LOGIN_URL")
+LOGIN_EMAIL = os.getenv("LOGIN_EMAIL")
+LOGIN_PASSWORD = os.getenv("LOGIN_PASSWORD")
+INVALID_PASSWORD = os.getenv("INVALID_PASSWORD")
 
-@pytest.mark.login
-def test_login():
-    url = get_env_var('LOGIN_URL')
-    email = get_env_var('LOGIN_EMAIL')
-    password = get_env_var('LOGIN_PASSWORD')
-    session = requests.Session()
-    payload = {'email': email, 'password': password}
+@pytest.fixture(scope="module")
+def session():
+    """Create a requests session for persistent cookies."""
+    return requests.Session()
+
+def login(session, email, password):
+    """Attempt login and return response."""
+    if not LOGIN_URL:
+        raise ValueError("LOGIN_URL environment variable not set.")
+    payload = {
+        "email": email,
+        "password": password
+    }
     try:
-        response = session.post(url, data=payload, timeout=10)
+        resp = session.post(LOGIN_URL, data=payload, timeout=10)
+        resp.raise_for_status()
+        return resp
     except requests.exceptions.RequestException as e:
-        logging.error(f"Network error during login: {e}")
-        pytest.fail(f"Network error: {e}")
-    assert response.status_code == 200, f"Login failed (HTTP {response.status_code}): {response.text}" 
-    # Check for successful login indication (customize as needed)
-    if 'dashboard' not in response.url and 'success' not in response.text.lower():
-        logging.error(f"Login response did not indicate success. URL: {response.url}, Body: {response.text}")
-        pytest.fail("Login not successful.")
-    logging.info(f"Login successful for {email} at {url}")
+        pytest.fail(f"Network or HTTP error during login: {e}")
 
-# Usage:
-# 1. Set environment variables LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD.
-# 2. Run: pytest Tests/login_test.py --maxfail=1 --disable-warnings --junitxml=login_test_results.xml
+@pytest.mark.parametrize("email,password,expected", [
+    (LOGIN_EMAIL, LOGIN_PASSWORD, True),
+    (LOGIN_EMAIL, INVALID_PASSWORD, False)
+])
+def test_login(session, email, password, expected):
+    """
+    Test login with given credentials.
+    Checks for successful or failed authentication.
+    """
+    resp = login(session, email, password)
+    # Example logic: success if status code == 200 and 'token' in JSON response
+    try:
+        data = resp.json()
+    except ValueError:
+        pytest.fail("Response was not valid JSON.")
+    if expected:
+        assert resp.status_code == 200, f"Expected 200 OK, got {resp.status_code}"
+        assert "token" in data, "Expected authentication token in response."
+    else:
+        assert resp.status_code in [401, 403], f"Expected 401/403 for invalid login, got {resp.status_code}"
+        assert "error" in data or "message" in data, "Expected error message for failed login."
