@@ -1,64 +1,45 @@
-# Login Automation with Python, pytest, and requests
+# Login Automation Solution
 
 ## Overview
-Automated login validation using Python, pytest, and requests. Credentials are managed securely via environment variables. Designed for seamless integration into DevOps pipelines with full git and CI/CD support.
+This project provides a robust, secure, and maintainable Python pytest script for validating login functionality via API. It uses environment variables for credential management and is fully integrated with DevOps best practices and Git version control.
+
+## Features
+- Automated login validation using pytest and requests
+- Secure credential handling via environment variables (.env.template)
+- Robust error handling and logging
+- Ready for CI/CD pipeline integration
+- Comprehensive documentation and metadata
 
 ## Setup Instructions
-1. Clone the repository:
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/lakshmi1212/AgenticAI.git
    cd AgenticAI
    ```
-2. Create a Python virtual environment (recommended):
+2. **Create your environment file:**
+   Copy `.env.template` to `.env` and fill in your credentials:
+   ```bash
+   cp .env.template .env
+   # Edit .env and provide LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD
+   ```
+3. **Install dependencies:**
    ```bash
    python3.11 -m venv venv
    source venv/bin/activate
-   ```
-3. Install dependencies:
-   ```bash
    pip install -r requirements.txt
    ```
-4. Copy and configure environment variables:
+4. **Run the tests:**
    ```bash
-   cp .env.template .env
-   # Edit .env with your LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD
-   ```
-5. Export environment variables:
-   ```bash
-   export $(grep -v '^#' .env | xargs)
+   pytest Tests/login_test.py --junitxml=Tests/login_test_results.xml
    ```
 
-## Usage Guidelines
-Run the login tests:
-```bash
-pytest Tests/login_test.py --junitxml=Tests/login_test_results.xml
-```
+## Configuration
+- All secrets and sensitive credentials must be provided via environment variables (see `.env.template`). Never commit real secrets to the repo.
 
-## Configuration Steps
-- Edit `.env` for credentials (never commit secrets).
-- Update `LOGIN_URL` for your API endpoint.
+## Maintenance
+- Update scripts and dependencies as required.
+- Extend `Tests/login_test.py` for additional test cases (e.g., negative tests, 2FA, CSRF).
+- Review commit history and CI/CD results for quality assurance.
 
-## Maintenance Procedures
-- Update dependencies in `requirements.txt` as needed.
-- Extend tests in `Tests/login_test.py` for additional scenarios.
-- Regenerate metadata after changes.
-
-## Troubleshooting
-- Ensure environment variables are set.
-- Check API endpoint connectivity.
-- Review pytest output and XML report for errors.
-
-## CI/CD Integration
-- Ready for GitHub Actions workflow (.github/workflows/ci.yml).
-
-## Security
-- No hardcoded secrets. All credentials via environment variables.
-- Robust error handling and logging in test script.
-
-## Files
-- Tests/login_test.py: Main test script
-- .env.template: Environment variable template
-- requirements.txt: Python dependencies
-- README.md: Documentation
-- login_test.metadata.json: Metadata for automation
-- .github/workflows/ci.yml: CI/CD workflow
+## Support
+For issues or enhancements, please open a GitHub issue in this repository.
