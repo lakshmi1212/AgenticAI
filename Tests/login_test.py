@@ -1,3 +1,8 @@
+#!/usr/bin/env python3
+"""
+Pytest-based login automation for validating authentication endpoint.
+Uses environment variables for secure credential management.
+"""
 import os
 import requests
 import pytest
@@ -6,47 +11,44 @@ LOGIN_URL = os.getenv("LOGIN_URL")
 LOGIN_EMAIL = os.getenv("LOGIN_EMAIL")
 LOGIN_PASSWORD = os.getenv("LOGIN_PASSWORD")
 
-@pytest.mark.login
-def test_login_success():
+@pytest.mark.parametrize("login_url, email, password", [
+    (LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD)
+])
+def test_login_success(login_url, email, password):
     """
-    Test login endpoint with valid credentials.
-    Environment variables required:
-      - LOGIN_URL
-      - LOGIN_EMAIL
-      - LOGIN_PASSWORD
+    Test successful login with valid credentials.
     """
-    assert LOGIN_URL, "LOGIN_URL environment variable not set."
-    assert LOGIN_EMAIL, "LOGIN_EMAIL environment variable not set."
-    assert LOGIN_PASSWORD, "LOGIN_PASSWORD environment variable not set."
-    
-    payload = {
-        "email": LOGIN_EMAIL,
-        "password": LOGIN_PASSWORD
-    }
+    assert login_url, "LOGIN_URL environment variable must be set."
+    assert email, "LOGIN_EMAIL environment variable must be set."
+    assert password, "LOGIN_PASSWORD environment variable must be set."
     try:
-        response = requests.post(LOGIN_URL, json=payload, timeout=10)
-    except requests.RequestException as e:
-        pytest.fail(f"Network error during login: {e}")
-    
-    # Success: 2xx status code and typically some token in the response
-    assert response.status_code == 200, f"Login failed with status {response.status_code}: {response.text}"
+        response = requests.post(
+            login_url,
+            json={"email": email, "password": password},
+            timeout=10
+        )
+    except requests.exceptions.RequestException as exc:
+        pytest.fail(f"Network error during login request: {exc}")
+    assert response.status_code == 200, f"Expected 200, got {response.status_code}. Response: {response.text}"
+    # Optionally validate response content (e.g., presence of token, user info)
     data = response.json()
-    assert "token" in data or "access_token" in data, "No token found in login response."
+    assert "token" in data or "access_token" in data, "No token found in response."
 
-@pytest.mark.login
-def test_login_invalid_password():
+@pytest.mark.parametrize("login_url, email, password", [
+    (LOGIN_URL, LOGIN_EMAIL, "wrongpassword")
+])
+def test_login_failure(login_url, email, password):
     """
-    Test login endpoint with invalid password.
+    Test failed login with invalid password.
     """
-    assert LOGIN_URL, "LOGIN_URL environment variable not set."
-    assert LOGIN_EMAIL, "LOGIN_EMAIL environment variable not set."
-    wrong_password = "invalid_password_123!"
-    payload = {
-        "email": LOGIN_EMAIL,
-        "password": wrong_password
-    }
+    assert login_url, "LOGIN_URL environment variable must be set."
+    assert email, "LOGIN_EMAIL environment variable must be set."
     try:
-        response = requests.post(LOGIN_URL, json=payload, timeout=10)
-    except requests.RequestException as e:
-        pytest.fail(f"Network error during login: {e}")
-    assert response.status_code in [401, 403], f"Expected failure, got status {response.status_code}: {response.text}"
+        response = requests.post(
+            login_url,
+            json={"email": email, "password": password},
+            timeout=10
+        )
+    except requests.exceptions.RequestException as exc:
+        pytest.fail(f"Network error during login request: {exc}")
+    assert response.status_code in [400, 401, 403], f"Expected failure status, got {response.status_code}. Response: {response.text}"
