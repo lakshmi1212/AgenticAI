@@ -4,7 +4,7 @@
   "default_branch": "main",
   "python_version": "3.11",
   "test_files": ["Tests/login_test.py"],
-  "dependencies": ["pytest", "requests", "python-dotenv"],
+  "dependencies": ["pytest", "requests"],
   "requirements_file": "requirements.txt",
   "required_secrets": [
     "LOGIN_URL",
@@ -23,15 +23,15 @@
     "commit_confirmation": "All test, config, and documentation files committed to main branch.",
     "repo": "lakshmi1212/AgenticAI",
     "branch": "main",
-    "commit_hash": "<to-be-filled-by-CI>"
+    "commit_hash": "pending_ci_file"
   },
   "repository_files": [
     "Tests/login_test.py",
-    "Tests/.env.template",
-    "Tests/README.md",
+    ".env.template",
+    "README.md",
     "requirements.txt",
-    "login_test.metadata.json",
-    ".github/workflows/ci.yml"
+    ".github/workflows/ci.yml",
+    "login_test.metadata.json"
   ],
   "pending_files": [
     ".github/workflows/ci.yml"
