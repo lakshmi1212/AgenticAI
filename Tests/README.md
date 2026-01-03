@@ -1,54 +1,47 @@
-# Login Automation Solution
+# Login Automation Test Suite
 
 ## Overview
-Automated login validation using Python, pytest, and requests. Credentials are securely managed via environment variables. Designed for robust QA and DevOps integration.
+Automated login validation using Python, pytest, and requests. Credentials and endpoint are securely loaded via environment variables. Designed for DevOps pipelines and git integration.
 
 ## Setup Instructions
-1. **Clone Repository:**
-    ```bash
-    git clone https://github.com/lakshmi1212/AgenticAI.git
-    cd AgenticAI
-    ```
-2. **Install Python (3.11 recommended):**
-    Ensure Python 3.11 is installed.
-3. **Install Dependencies:**
+1. **Python 3.11** is required.
+2. Install dependencies:
     ```bash
     pip install -r requirements.txt
     ```
-4. **Configure Environment Variables:**
-    - Copy `Tests/.env.template` to `.env` and fill in your credentials.
-    - Export the variables or use a tool like [python-dotenv](https://pypi.org/project/python-dotenv/) if desired.
+3. Copy `.env.template` to `.env` and fill in your actual values:
     ```bash
-    export LOGIN_URL=https://your-app.com/api/login
-    export LOGIN_EMAIL=your@email.com
-    export LOGIN_PASSWORD=your_password
+    cp Tests/.env.template Tests/.env
+    # Edit Tests/.env with your credentials
+    ```
+4. Export environment variables (for local run):
+    ```bash
+    export $(cat Tests/.env | xargs)
     ```
 
-## Running the Tests
+## Running Tests
 ```bash
 pytest Tests/login_test.py --junitxml=Tests/login_test_results.xml
 ```
-- Results are saved as JUnit XML for CI/CD integration.
 
-## Troubleshooting Guide
-- **Missing Environment Variables:** Ensure LOGIN_URL, LOGIN_EMAIL, and LOGIN_PASSWORD are set.
-- **Network Errors:** Check network connectivity and endpoint URL.
-- **Authentication Failures:** Verify credentials and check for account lockout or 2FA requirements.
-- **Git Errors:** Ensure you have write access and correct credentials for git operations.
-- **Response Not JSON:** Check if the endpoint is correct and returning expected data.
+## Test Results
+- JUnit XML report is generated at `Tests/login_test_results.xml`.
 
-## Maintenance Procedures
-- Update scripts in `Tests/` as needed.
-- NEVER commit real secrets or `.env` files.
-- Update `requirements.txt` when dependencies change.
-- Extend tests by adding new pytest functions or fixtures in `login_test.py`.
+## Troubleshooting
+- **Network errors**: Ensure LOGIN_URL is reachable.
+- **Authentication failures**: Double-check credentials in your `.env` file.
+- **Missing environment variables**: Ensure all required variables are set.
+- **Git errors**: Verify your git remote and permissions.
 
-## Enhancement Recommendations
-- Integrate with CI/CD using `.github/workflows/ci.yml`.
-- Add support for multi-user login scenarios and negative test cases.
-- Modularize for advanced reporting and 2FA/multi-step authentication.
+## Maintenance & Extensibility
+- Update credentials in `.env` as needed.
+- Extend `login_test.py` for additional authentication scenarios.
 
-## Support & Resources
-- [Pytest Documentation](https://docs.pytest.org/en/stable/)
-- [Requests Documentation](https://docs.python-requests.org/en/latest/)
-- For advanced issues, escalate to your QA/DevOps lead.
+## Recommendations
+- Integrate with CI/CD pipelines (see `.github/workflows/ci.yml`).
+- Modularize for multi-user and advanced reporting.
+- Regularly update dependencies in `requirements.txt`.
+
+## Support & Escalation
+- Review logs and test reports for diagnostics.
+- For advanced support, escalate to QA automation lead.
