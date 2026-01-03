@@ -23,7 +23,7 @@
     "commit_confirmation": "All test, config, and documentation files committed to main branch.",
     "repo": "lakshmi1212/AgenticAI",
     "branch": "main",
-    "commit_hash": "pending_ci_file"
+    "commit_hash": "pending"
   },
   "repository_files": [
     "Tests/login_test.py",
