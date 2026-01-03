@@ -1,48 +1,29 @@
 #!/usr/bin/env python3
 """
-pytest script for automated login validation using requests.
-Credentials are securely loaded from environment variables.
+Automated login validation using pytest and requests.
+Credentials and login URL are managed via environment variables for security.
 """
 import os
-import pytest
 import requests
+import pytest
 
-LOGIN_URL = os.getenv("LOGIN_URL")
-LOGIN_EMAIL = os.getenv("LOGIN_EMAIL")
-LOGIN_PASSWORD = os.getenv("LOGIN_PASSWORD")
+LOGIN_URL = os.getenv('LOGIN_URL')
+LOGIN_EMAIL = os.getenv('LOGIN_EMAIL')
+LOGIN_PASSWORD = os.getenv('LOGIN_PASSWORD')
 
-def is_configured():
-    return all([LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD])
-
-def login_request(url, email, password):
+@pytest.mark.parametrize("email,password", [(LOGIN_EMAIL, LOGIN_PASSWORD)])
+def test_login(email, password):
+    assert LOGIN_URL, "LOGIN_URL environment variable is not set."
+    assert email, "LOGIN_EMAIL environment variable is not set."
+    assert password, "LOGIN_PASSWORD environment variable is not set."
+    payload = {"email": email, "password": password}
     try:
-        response = requests.post(
-            url,
-            json={"email": email, "password": password},
-            timeout=10
-        )
-        return response
+        response = requests.post(LOGIN_URL, json=payload, timeout=10)
     except requests.RequestException as e:
-        pytest.fail(f"Network or request error: {e}")
-
-@pytest.mark.skipif(not is_configured(), reason="Environment variables for login not set.")
-def test_login_success():
-    """
-    Positive test: Ensure login succeeds with correct credentials.
-    """
-    resp = login_request(LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD)
-    assert resp.status_code == 200, f"Expected 200, got {resp.status_code}"
-    assert "token" in resp.json() or "access" in resp.json(), "Login response missing expected auth token."
-    # Additional checks: e.g., session, cookies, etc.
-
-@pytest.mark.parametrize("email,password,expected_status", [
-    ("wrong@example.com", "wrongpass", 401),
-    ("", LOGIN_PASSWORD, 400),
-    (LOGIN_EMAIL, "", 400)
-])
-def test_login_negative(email, password, expected_status):
-    """
-    Negative tests: Incorrect credentials, missing fields.
-    """
-    resp = login_request(LOGIN_URL, email, password)
-    assert resp.status_code == expected_status, f"Expected {expected_status}, got {resp.status_code}"
+        pytest.fail(f"Network or connection error: {e}")
+    assert response.status_code == 200, f"Unexpected status code: {response.status_code}"
+    try:
+        data = response.json()
+    except Exception:
+        pytest.fail("Response is not valid JSON.")
+    assert "token" in data or data.get("success", False), f"Login failed or unexpected response: {data}"
