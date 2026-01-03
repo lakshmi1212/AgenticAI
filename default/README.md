@@ -1,13 +1,13 @@
-# Login Automation Test Suite
+# Login Automation Solution
 
-This repository provides a robust, secure, and maintainable login automation solution using Python, pytest, and requests. It is fully integrated with DevOps practices, ready for CI/CD pipelines, and supports secure credential management via environment variables.
+## Overview
+Automated login validation using Python, pytest, and requests. Secure credential management via environment variables. Ready for DevOps pipelines and CI/CD integration.
 
 ## Features
-- Automated login validation with positive and negative test cases
-- Secure credential handling using environment variables
-- Pytest-based reporting and error handling
-- Ready for GitHub Actions CI integration
-- Modular and extensible for future test cases
+- Secure credential handling (.env.template)
+- Positive and negative login test cases
+- Robust error handling and reporting
+- Git integration and metadata
 
 ## Setup Instructions
 1. **Clone the repository:**
@@ -15,41 +15,38 @@ This repository provides a robust, secure, and maintainable login automation sol
    git clone https://github.com/lakshmi1212/AgenticAI.git
    cd AgenticAI
    ```
-2. **Python Installation:**
-   - Python 3.11 is required. Download from [python.org](https://www.python.org/downloads/release/python-3110/)
-3. **Install dependencies:**
+2. **Install Python 3.11**
+3. **Create and activate a virtual environment:**
+   ```bash
+   python3.11 -m venv venv
+   source venv/bin/activate
+   ```
+4. **Install dependencies:**
    ```bash
    pip install -r requirements.txt
    ```
-4. **Configure environment variables:**
-   - Copy `.env.template` to `.env` and fill in your credentials:
-     ```
-     cp .env.template .env
-     # Edit .env with your LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD
-     ```
-   - Load environment variables (Linux/macOS):
-     ```bash
-     export $(grep -v '^#' .env | xargs)
-     ```
-   - On CI/CD, set secrets via your platform's secret management.
+5. **Configure environment variables:**
+   - Copy `.env.template` to `.env` and fill in your credentials.
+   - Export variables or use a tool like `python-dotenv`.
+
+## Configuration Steps
+- Set `LOGIN_URL`, `LOGIN_EMAIL`, and `LOGIN_PASSWORD` in your environment or `.env` file.
 
 ## Usage Guidelines
-- **Run tests locally:**
+- Run tests:
   ```bash
   pytest Tests/login_test.py --junitxml=Tests/login_test_results.xml
   ```
-- **Test Results:**
-  - JUnit XML report generated at `Tests/login_test_results.xml`.
-- **Troubleshooting:**
-  - Ensure all environment variables are set and valid.
-  - Check network connectivity to login endpoint.
-  - Review error messages in pytest output.
+- Review results in the output XML file.
 
 ## Maintenance Procedures
-- Update dependencies in `requirements.txt` as needed.
-- Extend test cases in `Tests/login_test.py` for additional scenarios.
-- Manage credentials securely: never commit secrets to the repo.
-- For CI/CD, update `.github/workflows/ci.yml` for pipeline changes.
+- Update credentials in `.env.template` as needed.
+- Extend `Tests/login_test.py` for additional scenarios.
+- Update dependencies in `requirements.txt`.
+
+## Security Notice
+- Do **not** commit real credentials.
+- Use environment variables for all secrets.
 
 ## Repository Structure
 ```
@@ -65,16 +62,9 @@ AgenticAI/
         └── ci.yml
 ```
 
-## Security & Compliance
-- No hardcoded secrets in code
-- Credentials passed via environment variables
-- Error handling for network and authentication issues
-- Compliant with PEP8 and QA best practices
-
-## Extending & Customization
-- Add more tests to `Tests/login_test.py`
-- Parameterize additional environment variables for other endpoints
-- Integrate with more CI/CD platforms as needed
+## CI/CD Integration
+- Workflow file: `.github/workflows/ci.yml` (to be generated)
+- On push, pull request, or manual dispatch, tests are executed automatically.
 
 ## Contact
-For support or contributions, open an issue or pull request on GitHub.
+For issues or contributions, open a GitHub issue or pull request.
