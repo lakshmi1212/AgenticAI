@@ -27,8 +27,8 @@
   },
   "repository_files": [
     "Tests/login_test.py",
-    "Tests/.env.template",
-    "Tests/README.md",
+    ".env.template",
+    "README.md",
     "requirements.txt",
     ".github/workflows/ci.yml",
     "login_test.metadata.json"
