@@ -1,45 +1,49 @@
 # Login Automation Solution
 
-## Project Overview
-Automated login validation using Python, pytest, and requests, fully integrated for DevOps pipelines.
+## Overview
+Automated login validation using Python, pytest, and requests. Integrates with DevOps pipelines and GitHub for robust, secure, and maintainable QA automation.
+
+## Features
+- Secure credential management via environment variables
+- Positive/negative login test cases
+- Robust error handling and reporting
+- Ready for CI/CD integration (GitHub Actions)
 
 ## Setup Instructions
-1. Install Python 3.11.
-2. Clone this repository.
-3. Create a `.env` file using `.env.template` and provide correct credentials.
-4. Install dependencies:
-   ```bash
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/lakshmi1212/AgenticAI.git
+   cd AgenticAI
+   ```
+2. Copy and configure environment variables:
+   ```sh
+   cp .env.template .env
+   # Edit .env and set LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD
+   ```
+3. Install dependencies:
+   ```sh
+   python3.11 -m venv venv
+   source venv/bin/activate
    pip install -r requirements.txt
    ```
-5. Export environment variables:
-   ```bash
-   export $(grep -v '^#' .env | xargs)
-   ```
 
-## Configuration Steps
-- Edit `.env.template` with your LOGIN_URL, LOGIN_EMAIL, and LOGIN_PASSWORD.
-- Never commit actual secrets to git; use environment variables or secret stores in CI/CD.
-
-## Usage Guidelines
-- Run tests with:
-  ```bash
-  pytest Tests/login_test.py --junitxml=Tests/login_test_results.xml
-  ```
-- Review `Tests/login_test_results.xml` for test outcomes.
-
-## Maintenance Procedures
-- Update test logic in `Tests/login_test.py` for new scenarios.
-- Update dependencies in `requirements.txt` as needed.
-- Rotate credentials securely and update `.env`.
+## Running Tests
+```sh
+pytest Tests/login_test.py --junitxml=Tests/login_test_results.xml
+```
 
 ## CI/CD Integration
-- GitHub Actions workflow is provided in `.github/workflows/ci.yml`.
-- Ensure secrets are set in repository settings for secure CI execution.
+- Ready for GitHub Actions (see .github/workflows/ci.yml)
 
-## Security Notes
-- No secrets are hardcoded.
-- All credentials handled via environment variables.
+## Maintenance
+- Update test scripts in `Tests/`
+- Manage credentials securely in `.env`
+- Extend tests for additional scenarios as needed
 
-## Extensibility
-- Modular test script for future test case additions.
-- Scalable for expanded authentication scenarios (2FA, tokens, etc).
+## Troubleshooting
+- Ensure all environment variables are set
+- Check network connectivity to LOGIN_URL
+- Review pytest output and logs
+
+## Contact
+For support, contact the repository maintainer.
