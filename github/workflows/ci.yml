@@ -24,14 +24,14 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install selenium pytest pytest-html
+          pip install pytest requests numpy
       - name: Run tests
         env:
-          LOGIN_USER: $https://cognixia.udemy.com/
-          LOGIN_PASSWORD: nagalakshmi.v@ascendion.com
-          LOGIN_API_KEY: Arnav@0311
+          SECRET_ONE: $https://cognixia.udemy.com/
+          SECRET_TWO: nagalakshmi.v@ascendion.com
+          SECRET_THREE: Arnav@0311
         run: |
-          pytest tests/test_login.py --junitxml=results.xml
+          pytest tests/ --junitxml=results.xml
       - name: Upload test results
         if: always()
         uses: actions/upload-artifact@v4
