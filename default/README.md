@@ -1,70 +1,45 @@
 # Login Automation Solution
 
-## Overview
-Automated login validation using Python, pytest, and requests. Secure credential management via environment variables. Ready for DevOps pipelines and CI/CD integration.
-
-## Features
-- Secure credential handling (.env.template)
-- Positive and negative login test cases
-- Robust error handling and reporting
-- Git integration and metadata
+## Project Overview
+Automated login validation using Python, pytest, and requests, fully integrated for DevOps pipelines.
 
 ## Setup Instructions
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/lakshmi1212/AgenticAI.git
-   cd AgenticAI
-   ```
-2. **Install Python 3.11**
-3. **Create and activate a virtual environment:**
-   ```bash
-   python3.11 -m venv venv
-   source venv/bin/activate
-   ```
-4. **Install dependencies:**
+1. Install Python 3.11.
+2. Clone this repository.
+3. Create a `.env` file using `.env.template` and provide correct credentials.
+4. Install dependencies:
    ```bash
    pip install -r requirements.txt
    ```
-5. **Configure environment variables:**
-   - Copy `.env.template` to `.env` and fill in your credentials.
-   - Export variables or use a tool like `python-dotenv`.
+5. Export environment variables:
+   ```bash
+   export $(grep -v '^#' .env | xargs)
+   ```
 
 ## Configuration Steps
-- Set `LOGIN_URL`, `LOGIN_EMAIL`, and `LOGIN_PASSWORD` in your environment or `.env` file.
+- Edit `.env.template` with your LOGIN_URL, LOGIN_EMAIL, and LOGIN_PASSWORD.
+- Never commit actual secrets to git; use environment variables or secret stores in CI/CD.
 
 ## Usage Guidelines
-- Run tests:
+- Run tests with:
   ```bash
   pytest Tests/login_test.py --junitxml=Tests/login_test_results.xml
   ```
-- Review results in the output XML file.
+- Review `Tests/login_test_results.xml` for test outcomes.
 
 ## Maintenance Procedures
-- Update credentials in `.env.template` as needed.
-- Extend `Tests/login_test.py` for additional scenarios.
-- Update dependencies in `requirements.txt`.
-
-## Security Notice
-- Do **not** commit real credentials.
-- Use environment variables for all secrets.
-
-## Repository Structure
-```
-AgenticAI/
-├── Tests/
-│   └── login_test.py
-├── .env.template
-├── README.md
-├── requirements.txt
-├── login_test.metadata.json
-└── .github/
-    └── workflows/
-        └── ci.yml
-```
+- Update test logic in `Tests/login_test.py` for new scenarios.
+- Update dependencies in `requirements.txt` as needed.
+- Rotate credentials securely and update `.env`.
 
 ## CI/CD Integration
-- Workflow file: `.github/workflows/ci.yml` (to be generated)
-- On push, pull request, or manual dispatch, tests are executed automatically.
+- GitHub Actions workflow is provided in `.github/workflows/ci.yml`.
+- Ensure secrets are set in repository settings for secure CI execution.
 
-## Contact
-For issues or contributions, open a GitHub issue or pull request.
+## Security Notes
+- No secrets are hardcoded.
+- All credentials handled via environment variables.
+
+## Extensibility
+- Modular test script for future test case additions.
+- Scalable for expanded authentication scenarios (2FA, tokens, etc).
