@@ -1,37 +1,34 @@
+#!/usr/bin/env python3
+"""
+Pytest login automation for validating authentication endpoint using environment variables for credentials.
+
+- LOGIN_URL: Endpoint for login
+- LOGIN_EMAIL: Email for login
+- LOGIN_PASSWORD: Password for login
+
+This script performs a positive login test and reports results. Credentials are read from environment variables for security.
+"""
 import os
 import pytest
 import requests
-import logging
-
-# Set up logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 
 LOGIN_URL = os.getenv("LOGIN_URL")
 LOGIN_EMAIL = os.getenv("LOGIN_EMAIL")
 LOGIN_PASSWORD = os.getenv("LOGIN_PASSWORD")
 
-@pytest.mark.parametrize("email,password,expected_status", [
-    (LOGIN_EMAIL, LOGIN_PASSWORD, 200),  # Positive test case
-])
-def test_login(email, password, expected_status):
-    """
-    Test login endpoint with provided credentials.
-    Credentials are securely loaded from environment variables.
-    """
-    if not LOGIN_URL or not email or not password:
-        pytest.skip("Required environment variables not set: LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD")
-
+@pytest.mark.login
+def test_login_positive():
+    assert LOGIN_URL, "LOGIN_URL environment variable not set."
+    assert LOGIN_EMAIL, "LOGIN_EMAIL environment variable not set."
+    assert LOGIN_PASSWORD, "LOGIN_PASSWORD environment variable not set."
     try:
-        response = requests.post(
+        resp = requests.post(
             LOGIN_URL,
-            json={"email": email, "password": password},
+            json={"email": LOGIN_EMAIL, "password": LOGIN_PASSWORD},
             timeout=10
         )
-        logging.info(f"Request to {LOGIN_URL} returned status {response.status_code}")
     except requests.RequestException as e:
-        logging.error(f"Network error during login request: {e}")
         pytest.fail(f"Network error during login request: {e}")
-
-    assert response.status_code == expected_status, f"Expected {expected_status}, got {response.status_code}. Response: {response.text}"
-    # Optionally, validate response content for successful login
-    # assert 'token' in response.json(), "No token returned in successful login response"
+    assert resp.status_code == 200, f"Unexpected status code: {resp.status_code}, Response: {resp.text}"
+    # You may need to adapt the following assertion depending on your API response
+    assert "token" in resp.json() or resp.json().get("success", False), "Login did not succeed: {resp.text}"
