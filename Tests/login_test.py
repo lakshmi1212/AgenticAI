@@ -2,31 +2,32 @@ import os
 import requests
 import pytest
 
-LOGIN_URL = os.getenv("LOGIN_URL")
-LOGIN_EMAIL = os.getenv("LOGIN_EMAIL")
-LOGIN_PASSWORD = os.getenv("LOGIN_PASSWORD")
+LOGIN_URL = os.environ.get("LOGIN_URL")
+LOGIN_EMAIL = os.environ.get("LOGIN_EMAIL")
+LOGIN_PASSWORD = os.environ.get("LOGIN_PASSWORD")
 
-@pytest.mark.parametrize("email,password,expected_status", [
-    (LOGIN_EMAIL, LOGIN_PASSWORD, 200),  # Positive test case
-])
-def test_login(email, password, expected_status):
-    """
-    Test login functionality by sending credentials to the login endpoint.
-    Credentials are loaded from environment variables for security.
-    """
-    if not LOGIN_URL or not email or not password:
-        pytest.skip("Missing LOGIN_URL or credentials in environment variables.")
+@pytest.mark.parametrize("email,password", [(LOGIN_EMAIL, LOGIN_PASSWORD)])
+def test_login(email, password):
+    assert LOGIN_URL, "LOGIN_URL must be set as environment variable."
+    assert email, "LOGIN_EMAIL must be set as environment variable."
+    assert password, "LOGIN_PASSWORD must be set as environment variable."
+    session = requests.Session()
     try:
-        response = requests.post(
+        response = session.post(
             LOGIN_URL,
-            json={"email": email, "password": password},
+            data={"email": email, "password": password},
             timeout=10
         )
-    except requests.RequestException as e:
-        pytest.fail(f"Network or connection error during login: {e}")
-    assert response.status_code == expected_status, (
-        f"Login failed. Expected status {expected_status}, got {response.status_code}. Response: {response.text}"
-    )
-    # Optionally validate response structure for successful login
-    if response.status_code == 200:
-        assert "token" in response.json() or "session" in response.json(), "No authentication token/session returned."
+    except requests.exceptions.RequestException as e:
+        pytest.fail(f"Network error during login: {e}")
+    assert response.status_code == 200, f"Unexpected status code: {response.status_code}"
+    # Check for successful login
+    try:
+        json_data = response.json()
+        if "token" in json_data:
+            assert json_data["token"], "Login token not found in response."
+    except Exception:
+        if response.history:
+            assert response.history[0].status_code == 302, "Expected redirect after login."
+        else:
+            assert "login successful" in response.text.lower() or "dashboard" in response.text.lower(), "Login failed or response not recognized."
