@@ -23,13 +23,14 @@
     "commit_confirmation": "All test, config, and documentation files committed to main branch.",
     "repo": "lakshmi1212/AgenticAI",
     "branch": "main",
-    "commit_hash": "pending"  
+    "commit_hash": "pending"
   },
   "repository_files": [
     "Tests/login_test.py",
-    "Tests/.env.template",
-    "Tests/README.md",
+    ".env.template",
+    "README.md",
     "requirements.txt",
+    ".github/workflows/ci.yml",
     "login_test.metadata.json"
   ],
   "pending_files": [
