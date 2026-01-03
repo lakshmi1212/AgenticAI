@@ -5,7 +5,7 @@
   "python_version": "3.11",
   "test_files": ["Tests/login_test.py"],
   "dependencies": ["pytest", "requests"],
-  "requirements_file": "root/requirements.txt",
+  "requirements_file": "requirements.txt",
   "required_secrets": [
     "LOGIN_URL",
     "LOGIN_EMAIL",
@@ -23,15 +23,14 @@
     "commit_confirmation": "All test, config, and documentation files committed to main branch.",
     "repo": "lakshmi1212/AgenticAI",
     "branch": "main",
-    "commit_hash": "pending" // Replace with actual hash after workflow commit
+    "commit_hash": "pending"  
   },
   "repository_files": [
     "Tests/login_test.py",
-    "root/.env.template",
-    "root/README.md",
-    "root/requirements.txt",
-    ".github/workflows/ci.yml",
-    "root/login_test.metadata.json"
+    "Tests/.env.template",
+    "Tests/README.md",
+    "requirements.txt",
+    "login_test.metadata.json"
   ],
   "pending_files": [
     ".github/workflows/ci.yml"
