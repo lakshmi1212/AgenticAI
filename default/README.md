@@ -1,45 +1,51 @@
-# Login Automation Solution
+# Login Automation Solution for DevOps Pipelines
 
 ## Overview
-Automated login validation using Python, pytest, and requests. Credentials and login URL are securely managed using environment variables. Designed for integration with DevOps pipelines and GitHub Actions.
+Automated login validation using Python, pytest, and requests. Secure, maintainable, and ready for CI/CD integration.
+
+## Features
+- Secure credential handling via environment variables
+- Robust error handling and logging
+- Pytest-based test automation
+- Ready for GitHub Actions CI
 
 ## Setup Instructions
 1. **Clone the repository:**
-   ```sh
+   ```bash
    git clone https://github.com/lakshmi1212/AgenticAI.git
    cd AgenticAI
    ```
-2. **Python Installation:**
-   - Requires Python 3.11
-   - Install dependencies:
-     ```sh
-     pip install -r requirements.txt
-     ```
-3. **Environment Configuration:**
-   - Copy `.env.template` to `.env` and fill in your credentials:
-     ```sh
-     cp .env.template .env
-     ```
-   - Edit `.env` to provide `LOGIN_URL`, `LOGIN_EMAIL`, and `LOGIN_PASSWORD`.
+2. **Install Python 3.11 and pip.**
+3. **Install dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+4. **Configure environment variables:**
+   - Copy `.env.template` to `.env` and fill in your credentials.
+   - Export variables or use a tool like `python-dotenv` (not required for this script).
 
-## Usage Guidelines
-- Run tests:
-  ```sh
-  pytest Tests/login_test.py --junitxml=Tests/login_test_results.xml
-  ```
-- Test results will be stored in `Tests/login_test_results.xml`.
+## Running Tests
+```bash
+pytest Tests/login_test.py --junitxml=Tests/login_test_results.xml
+```
+
+## Configuration
+- Required environment variables:
+  - `LOGIN_URL`: Login endpoint URL
+  - `LOGIN_EMAIL`: Login email
+  - `LOGIN_PASSWORD`: Login password
+
+## Maintenance
+- Update dependencies in `requirements.txt` as needed.
+- Extend `Tests/login_test.py` for more test scenarios.
+- NEVER commit secrets to version control.
+
+## CI/CD Integration
+- Ready for GitHub Actions workflow (`.github/workflows/ci.yml`).
 
 ## Troubleshooting
 - Ensure all required environment variables are set.
-- Check network connectivity to the login URL.
-- Review logs for error details.
+- Review logs for network or authentication errors.
 
-## Maintenance Procedures
-- Update dependencies in `requirements.txt` as needed.
-- Extend `Tests/login_test.py` for additional test cases.
-- Securely manage and rotate credentials in `.env`.
-
-## Security & Compliance
-- No credentials are hardcoded in the test script.
-- All sensitive information is managed via environment variables.
-- Follows PEP8 and QA automation best practices.
+## License
+MIT
