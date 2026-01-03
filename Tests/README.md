@@ -1,42 +1,38 @@
 # Login Automation Test Suite
 
 ## Overview
-Automated login validation using Python, pytest, and requests. This suite ensures authentication mechanisms are robust, secure, and ready for DevOps pipelines.
+Automated login validation using Python, pytest, and requests. Credentials managed via environment variables for security. Ready for DevOps integration.
 
 ## Setup Instructions
-1. **Python Installation**: Ensure Python 3.11 is installed.
-2. **Clone Repository**: `git clone https://github.com/lakshmi1212/AgenticAI.git`
-3. **Install Dependencies**: `pip install -r requirements.txt`
-4. **Environment Variables**:
-    - Copy `Tests/.env.template` to `.env` (do not commit `.env`)
-    - Fill in LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD
-    - Export these variables in your shell or use a tool like `python-dotenv`
+1. Install Python 3.11.
+2. Clone the repository.
+3. Copy `Tests/.env.template` to `.env` and fill in your credentials.
+4. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-## Configuration Steps
-- Store credentials securely (never commit secrets).
-- Customize `LOGIN_URL` as needed for your environment.
+## Configuration
+- Set the following environment variables:
+  - LOGIN_URL
+  - LOGIN_EMAIL
+  - LOGIN_PASSWORD
 
-## Usage Guidelines
-- Run tests:
-  ```bash
-  pytest Tests/login_test.py --junitxml=Tests/login_test_results.xml
-  ```
-- Results are reported in JUnit XML for CI integration.
-- Logging output provided for troubleshooting.
+## Usage
+Run the test suite:
+```bash
+pytest Tests/login_test.py --junitxml=Tests/login_test_results.xml
+```
 
-## Maintenance Procedures
-- Update credentials in `.env` only as needed.
-- Extend `login_test.py` for additional test cases or endpoints.
-- Review code for security compliance before updates.
+## Maintenance
+- Update credentials in `.env` as needed.
+- Extend `login_test.py` for additional test cases.
+- Ensure compliance with coding standards and security best practices.
+
+## CI/CD Integration
+- Ready for GitHub Actions via `.github/workflows/ci.yml` (see metadata for details).
 
 ## Troubleshooting
-- Ensure environment variables are set and accessible.
-- Check network connectivity to LOGIN_URL.
-- Review logs for error details.
-
-## Extensibility
-- Modular design allows easy extension for 2FA, CSRF, and other auth scenarios.
-- Parameterization supports multiple test cases.
-
-## Contact
-- For issues, open a GitHub issue or contact the repo maintainer.
+- Ensure all environment variables are set.
+- Review error messages in test output.
+- For network errors, check connectivity and API health.
