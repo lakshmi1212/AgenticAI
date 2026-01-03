@@ -27,7 +27,7 @@ jobs:
           pip install pytest requests numpy
       - name: Run tests
         env:
-          SECRET_ONE: https://cognixia.udemy.com/
+          SECRET_ONE: $https://cognixia.udemy.com/
           SECRET_TWO: nagalakshmi.v@ascendion.com
           SECRET_THREE: Arnav@0311
         run: |
