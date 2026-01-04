@@ -1,64 +1,56 @@
-# Login Automation Solution
+# Login Automation with Python, pytest, and requests
 
 ## Overview
-Automated Python login test using `pytest` and `requests` for robust authentication validation. Credentials are managed via environment variables for security. Full git integration, documentation, and metadata enable seamless DevOps pipeline integration.
-
-## Repository Structure
-```
-.
-├── Tests/
-│   └── login_test.py
-├── .env.template
-├── README.md
-├── requirements.txt
-├── login_test.metadata.json
-└── .github/
-    └── workflows/
-        └── ci.yml (to be added)
-```
+Automated login validation using Python, pytest, and requests. Secure credential handling via environment variables. Integrates with DevOps pipelines and GitHub Actions.
 
 ## Setup Instructions
-1. **Clone Repository**
+
+1. **Clone the repository:**
    ```bash
    git clone https://github.com/lakshmi1212/AgenticAI.git
    cd AgenticAI
    ```
-2. **Install Python 3.11**
-3. **Install Dependencies**
+2. **Python Installation:**
+   - Install Python 3.11 from [python.org](https://www.python.org/downloads/release/python-3110/)
+
+3. **Install dependencies:**
    ```bash
    pip install -r requirements.txt
    ```
-4. **Configure Environment Variables**
-   - Copy `.env.template` to `.env`
-   - Fill in `LOGIN_URL`, `LOGIN_EMAIL`, `LOGIN_PASSWORD`
-   - Load variables (e.g., with `python-dotenv` or export manually):
-     ```bash
-     export $(grep -v '^#' .env | xargs)
-     ```
+4. **Configure environment variables:**
+   - Copy `.env.template` to `.env` and set your credentials and login URL.
+   - Or, set environment variables directly:
+     - `LOGIN_URL`
+     - `LOGIN_EMAIL`
+     - `LOGIN_PASSWORD`
 
-## Usage
-Run the login test:
+## Usage Guidelines
+
+Run the tests:
 ```bash
-pytest Tests/login_test.py --junitxml=Tests/login_test_results.xml
+pytest Tests/login_test.py
 ```
 
-## CI/CD Integration
-- GitHub Actions workflow file: `.github/workflows/ci.yml` (pending)
-- Automated test execution on push/PR to `main` branch.
+### Test Results
+- JUnit XML and HTML reports can be generated via pytest options.
+- Test covers both successful and failed login scenarios.
+
+## Maintenance Procedures
+- Update credentials in `.env` as needed.
+- Extend `Tests/login_test.py` for more test cases (e.g., 2FA, CSRF).
+- Keep dependencies updated in `requirements.txt`.
 
 ## Troubleshooting
-- Ensure all required environment variables are set.
-- Check network connectivity to the login endpoint.
-- Review logs and JUnit XML report for errors.
+- Ensure environment variables are set and valid.
+- Review error messages in pytest output for details.
 
-## Maintenance
-- Update credentials in `.env` (never commit secrets).
-- Extend tests in `Tests/login_test.py` for additional scenarios.
-- Update dependencies in `requirements.txt` as needed.
+## Security Notes
+- **Never commit secrets to the repository.** Use `.env.template` for examples only.
+- Credentials are loaded securely at runtime.
 
-## Security
-- No secrets are stored in code or git.
-- Robust error handling and logging included.
+## Extensibility
+- Modular test structure allows easy extension for more authentication scenarios.
 
-## Contact
-For issues, open a GitHub issue or contact the repository maintainer.
+---
+
+© 2024 AgenticAI DevOps & QA Automation
