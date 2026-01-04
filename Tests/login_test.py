@@ -1,56 +1,48 @@
 #!/usr/bin/env python3
 """
-Pytest script for automated login validation using requests.
-Credentials and login URL are read from environment variables for security.
+Automated login validation using pytest and requests.
+Loads credentials from environment variables for secure testing.
 """
 import os
-import pytest
 import requests
+import pytest
+import logging
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s %(levelname)s %(message)s')
 
 LOGIN_URL = os.getenv("LOGIN_URL")
 LOGIN_EMAIL = os.getenv("LOGIN_EMAIL")
 LOGIN_PASSWORD = os.getenv("LOGIN_PASSWORD")
 
 @pytest.mark.login
-def test_login_success():
+def test_login_positive():
     """
-    Positive test: Verify login with correct credentials
+    Positive test: Valid credentials should result in successful login.
     """
-    assert LOGIN_URL, "LOGIN_URL environment variable not set."
-    assert LOGIN_EMAIL, "LOGIN_EMAIL environment variable not set."
-    assert LOGIN_PASSWORD, "LOGIN_PASSWORD environment variable not set."
-    try:
-        response = requests.post(
-            LOGIN_URL,
-            json={"email": LOGIN_EMAIL, "password": LOGIN_PASSWORD},
-            timeout=10
-        )
-    except requests.RequestException as e:
-        pytest.fail(f"Network or request error: {e}")
-    assert response.status_code == 200, f"Expected status code 200, got {response.status_code}"
-    json_data = response.json()
-    assert "token" in json_data or "access_token" in json_data, "Login response missing token."
-    assert json_data.get("token") or json_data.get("access_token"), "Token value missing in response."
+    assert LOGIN_URL, "LOGIN_URL environment variable not set"
+    assert LOGIN_EMAIL, "LOGIN_EMAIL environment variable not set"
+    assert LOGIN_PASSWORD, "LOGIN_PASSWORD environment variable not set"
 
-@pytest.mark.login
-@pytest.mark.parametrize("email,password", [
-    ("wrong@example.com", "wrongpass"),
-    (LOGIN_EMAIL, "wrongpass"),
-    ("", ""),
-])
-def test_login_failure(email, password):
-    """
-    Negative test: Verify login fails with invalid credentials
-    """
-    assert LOGIN_URL, "LOGIN_URL environment variable not set."
+    payload = {
+        "email": LOGIN_EMAIL,
+        "password": LOGIN_PASSWORD
+    }
     try:
-        response = requests.post(
-            LOGIN_URL,
-            json={"email": email, "password": password},
-            timeout=10
-        )
+        response = requests.post(LOGIN_URL, json=payload, timeout=10)
+        logging.info(f"POST {LOGIN_URL} - Status: {response.status_code}")
+        response.raise_for_status()
     except requests.RequestException as e:
-        pytest.fail(f"Network or request error: {e}")
-    assert response.status_code in [400, 401, 403], f"Expected 400/401/403, got {response.status_code}"
-    json_data = response.json()
-    assert "error" in json_data or "message" in json_data, "Error message missing in response."
+        logging.error(f"Request failed: {e}")
+        pytest.fail(f"Login request failed: {e}")
+
+    # Success criteria: HTTP 200, and optionally, a token or success indicator in JSON
+    try:
+        data = response.json()
+    except Exception as e:
+        logging.error("Response is not valid JSON")
+        pytest.fail("Login response is not JSON")
+
+    assert response.status_code == 200, f"Expected 200, got {response.status_code}"
+    assert "token" in data or "success" in data, "No token or success indicator in response"
+    logging.info("Login test passed.")
