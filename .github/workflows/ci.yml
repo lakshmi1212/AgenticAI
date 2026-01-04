@@ -30,9 +30,9 @@ jobs:
           pip install pytest==7.4.4 requests==2.31.0
       - name: Run tests
         env:
-          LOGIN_URL: ${{ secrets.LOGIN_URL }}
-          LOGIN_EMAIL: ${{ secrets.LOGIN_EMAIL }}
-          LOGIN_PASSWORD: ${{ secrets.LOGIN_PASSWORD }}
+          LOGIN_URL: ${{ https://cognixia.udemy.com/}}
+          LOGIN_EMAIL: ${{ nagalakshmi.v@ascendion.comL }}
+          LOGIN_PASSWORD: ${{ Arnav@0311 }}
         run: |
           pytest Tests/login_test.py --maxfail=1 --disable-warnings --junitxml=login_test_results.xml
       - name: Upload test results
