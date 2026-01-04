@@ -1,56 +1,44 @@
-# Login Automation with Python, pytest, and requests
+# Login Automation QA Solution
 
-## Overview
-Automated login validation using Python, pytest, and requests. Secure credential handling via environment variables. Integrates with DevOps pipelines and GitHub Actions.
+## Project Overview
+Automated Python pytest script for login validation. Integrates with DevOps pipelines and version control for robust, secure authentication testing.
 
 ## Setup Instructions
+1. **Python Installation**: Ensure Python 3.11 is installed.
+2. **Install dependencies**:
+    ```bash
+    pip install -r requirements.txt
+    ```
+3. **Environment Variables**:
+    - Copy `.env.template` to `.env` and fill in actual values for `LOGIN_URL`, `LOGIN_EMAIL`, and `LOGIN_PASSWORD`.
+    - Use a secure secrets manager or CI/CD environment for production.
 
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/lakshmi1212/AgenticAI.git
-   cd AgenticAI
-   ```
-2. **Python Installation:**
-   - Install Python 3.11 from [python.org](https://www.python.org/downloads/release/python-3110/)
-
-3. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. **Configure environment variables:**
-   - Copy `.env.template` to `.env` and set your credentials and login URL.
-   - Or, set environment variables directly:
-     - `LOGIN_URL`
-     - `LOGIN_EMAIL`
-     - `LOGIN_PASSWORD`
+## Configuration Steps
+- Store credentials securely. Never commit `.env` with real secrets.
+- Update `login_test.py` for additional test cases as needed.
 
 ## Usage Guidelines
-
-Run the tests:
-```bash
-pytest Tests/login_test.py
-```
-
-### Test Results
-- JUnit XML and HTML reports can be generated via pytest options.
-- Test covers both successful and failed login scenarios.
+- Run tests:
+    ```bash
+    pytest Tests/login_test.py --maxfail=1 --disable-warnings -v
+    ```
+- View detailed logs in test output.
+- For CI/CD integration, configure secrets in pipeline settings.
 
 ## Maintenance Procedures
-- Update credentials in `.env` as needed.
-- Extend `Tests/login_test.py` for more test cases (e.g., 2FA, CSRF).
-- Keep dependencies updated in `requirements.txt`.
+- Update dependencies in `requirements.txt` as needed.
+- Extend `Tests/login_test.py` for new scenarios.
+- Rotate credentials regularly and audit for security.
 
-## Troubleshooting
-- Ensure environment variables are set and valid.
-- Review error messages in pytest output for details.
+## Repository Structure
+- `Tests/login_test.py`: Automated login test
+- `.env.template`: Environment variable template
+- `requirements.txt`: Python dependencies
+- `README.md`: Project documentation
+- `login_test.metadata.json`: Metadata for automation and integration
 
-## Security Notes
-- **Never commit secrets to the repository.** Use `.env.template` for examples only.
-- Credentials are loaded securely at runtime.
-
-## Extensibility
-- Modular test structure allows easy extension for more authentication scenarios.
-
----
-
-© 2024 AgenticAI DevOps & QA Automation
+## Quality Assurance
+- Follows PEP8 coding standards
+- Credentials handled via environment variables
+- Robust error handling and logging
+- Ready for DevOps pipeline integration
