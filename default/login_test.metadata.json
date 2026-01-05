@@ -23,7 +23,7 @@
     "commit_confirmation": "All test, config, and documentation files committed to main branch.",
     "repo": "lakshmi1212/AgenticAI",
     "branch": "main",
-    "commit_hash": "(committed via GitHub File Writer Tool)"
+    "commit_hash": ""
   },
   "repository_files": [
     "Tests/login_test.py",
