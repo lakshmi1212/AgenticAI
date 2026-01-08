@@ -1,56 +1,31 @@
-# Login Automation Solution
+# Math Operations Module
 
-## Project Overview
-Automated Python pytest script for login validation, leveraging secure environment variable management and full git integration for DevOps pipelines.
+This repository provides basic math operations (addition, subtraction) and automated tests using pytest.
 
-## Key Features
-- Secure credential handling via environment variables
-- Robust error handling and test reporting
-- Ready for CI/CD integration
-- Comprehensive documentation and metadata
+## Usage
 
-## Setup Instructions
-1. **Clone the repository:**
-   ```bash
-   git clone https://github.com/lakshmi1212/AgenticAI.git
-   cd AgenticAI
-   ```
-2. **Install Python 3.11**
-3. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
-4. **Configure environment variables:**
-   - Copy `.env.template` to `.env` and fill in your LOGIN_URL, LOGIN_EMAIL, LOGIN_PASSWORD.
-   - Export variables or use dotenv loader as preferred.
+```
+from src.math_operations import add, subtract
 
-## Configuration Steps
-- Edit `.env.template` and provide the actual login endpoint, email, and password.
-- Ensure environment variables are loaded before running tests.
+result_add = add(2, 3)
+result_subtract = subtract(5, 2)
+print(f"Addition: {result_add}, Subtraction: {result_subtract}")
+```
 
-## Usage Guidelines
-- Run tests with:
-  ```bash
-  pytest Tests/login_test.py
-  ```
-- Review test output for pass/fail status and error details.
+## Running Tests
 
-## Maintenance Procedures
-- Update dependencies in `requirements.txt` as needed.
-- Extend `Tests/login_test.py` for additional test cases.
-- Maintain credential security—never commit real secrets.
+Install dependencies:
 
-## Quality Assurance
-- Positive and negative test cases included.
-- Network and authentication errors are handled gracefully.
-- Code adheres to PEP8 and QA automation best practices.
+```
+pip install -r default/requirements.txt
+```
 
-## Deliverables
-- `Tests/login_test.py` – Login test script
-- `.env.template` – Environment variable template
-- `requirements.txt` – Dependency list
-- `README.md` – Documentation
-- `login_test.metadata.json` – Metadata for pipeline integration
+Run all tests:
 
-## Support
-For issues or enhancements, open a GitHub issue or pull request.
+```
+python -m pytest tests/ -v --tb=short
+```
+
+## CI/CD Workflow
+
+The CI workflow is defined in `.github/workflows/ci.yml` and runs tests on push and pull request events to the main branch.
