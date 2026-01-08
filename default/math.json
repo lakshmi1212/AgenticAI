@@ -1,0 +1,67 @@
+{
+  "agent_role": "ci_workflow_generator",
+  "repository": {
+    "url": "https://github.com/lakshmi1212/AgenticAI",
+    "branch": "main"
+  },
+  "workflow": {
+    "file_path": ".github/workflows/ci.yml",
+    "name": "CI Pipeline"
+  },
+  "triggers": {
+    "push": [".github/workflows"],
+    "pull_request": ["main"]
+  },
+  "runtime": {
+    "language": "python",
+    "version": "3.10"
+  },
+  "dependencies": [
+    "pytest==8.0.0"
+  ],
+  "test_execution": {
+    "test_directory": "tests",
+    "pytest_command": "python -m pytest tests/ -v --tb=short",
+    "fail_on_error": true
+  },
+  "constraints": {
+    "modify_source_files": false,
+    "modify_test_files": false
+  },
+  "commit": {
+    "enabled": true,
+    "message": "Add math operations, tests, requirements, and workflow metadata"
+  },
+  "jobs": [
+    {
+      "job_id": "test",
+      "job_name": "Run Python Tests",
+      "runs_on": "ubuntu-latest",
+      "steps": [
+        {
+          "step_name": "Checkout Repository",
+          "action_type": "uses",
+          "action": "actions/checkout@v4"
+        },
+        {
+          "step_name": "Set up Python",
+          "action_type": "uses",
+          "action": "actions/setup-python@v5",
+          "with": {
+            "python-version": "3.10"
+          }
+        },
+        {
+          "step_name": "Install dependencies",
+          "action_type": "run",
+          "command": "pip install -r default/requirements.txt"
+        },
+        {
+          "step_name": "Run tests",
+          "action_type": "run",
+          "command": "python -m pytest tests/ -v --tb=short"
+        }
+      ]
+    }
+  ]
+}
